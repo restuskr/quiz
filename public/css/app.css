@@ -507,6 +507,30 @@ pre {
 	min-height: 40px;
 }
 
+/* Varian dinamis "Setengah" & "All In" - dibedakan warnanya dari chip stake
+ * tetap (25/50/100) supaya peserta sadar ini pilihan berisiko lebih tinggi
+ * (jumlahnya ikut skor mereka, bisa lebih besar dari 100). */
+.wager-chip-half {
+	background: var(--orange-soft);
+	border-color: #f2d8bf;
+	color: #9a5a24;
+}
+.wager-chip-half.a {
+	background: var(--orange);
+	border-color: var(--orange);
+	color: #fff;
+}
+.wager-chip-allin {
+	background: var(--red-soft);
+	border-color: #f5c9c3;
+	color: #a9382d;
+}
+.wager-chip-allin.a {
+	background: var(--red);
+	border-color: var(--red);
+	color: #fff;
+}
+
 .toggle {
 	display: flex;
 	align-items: center;
