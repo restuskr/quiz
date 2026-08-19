@@ -19,6 +19,19 @@
 				</div>
 			</div>
 
+			<!-- Panel bantuan mode taruhan (v2) - cuma tampil kalau Mode Taruhan
+			     dinyalakan. Host pilih bantuan di sini SEBELUM menekan "Mulai
+			     kuis" atau "Kartu berikutnya", jadi berlaku untuk kartu
+			     berikutnya yang akan tampil. -->
+			<div class="card stack hidden" id="hintPanel">
+				<span class="label m-0">Bantuan untuk kartu berikutnya (mode taruhan)</span>
+				<select class="input" id="gHint">
+					<option value="none">Tanpa bantuan</option>
+					<option value="clue">Kasih clue</option>
+					<option value="half">50:50 (buang 2 opsi salah)</option>
+				</select>
+			</div>
+
 			<!-- ============================ LOBBY ============================ -->
 			<section id="lobby" class="lobby-grid">
 				<div class="stack">
@@ -59,6 +72,14 @@
 								Atur tim tiap siswa langsung di daftar Peserta di samping.
 							</p>
 						</div>
+						<label class="toggle">
+							<input type="checkbox" id="optWager" />
+							<span>Mode taruhan (peserta pasang poin sebelum soal muncul)</span>
+						</label>
+						<p class="muted text-small m-0">
+							Mode baru, tidak menggantikan mode biasa. Bisa dipakai bersamaan
+							dengan mode tim.
+						</p>
 						<label class="toggle">
 							<input type="checkbox" id="optShuffle" checked />
 							<span>Acak urutan soal</span>
@@ -104,6 +125,14 @@
 					<span class="pill pill-green" id="gAnswered">0 dari 0 menjawab</span>
 				</div>
 				<div class="timer mb-7" id="gTimer"><i></i></div>
+
+				<!-- Ditampilkan selama fase 'wager' (mode taruhan) - host TIDAK
+				     melihat soal/kode di sini, sama seperti peserta, supaya taruhan
+				     tetap blind walau layar guru diproyeksikan ke kelas. -->
+				<div id="gWagerWait" class="card stack hidden">
+					<h2 class="card-title">Peserta sedang memasang taruhan...</h2>
+					<p class="muted m-0" id="gWagerHintInfo">-</p>
+				</div>
 
 				<div id="gameGrid" class="game-grid">
 					<div class="flip" id="gFlip">
@@ -198,6 +227,9 @@
 			let stopTimer = null
 			let current = null
 			let lastTick = 0
+			// 'wager' selama fase pasang taruhan, 'question' selama fase soal -
+			// dipakai cuma untuk memilih label yang tepat di pill #gAnswered.
+			let phaseForProgress = 'question'
 
 			// AudioContext browser baru boleh berbunyi setelah ada gesture pengguna
 			// (kebijakan autoplay) - unlock sekali di interaksi pertama. Guru hampir
@@ -255,19 +287,33 @@
 					shuffle: el('optShuffle').checked,
 					count: Number(el('optCount').value) || 10,
 					types: [...picked],
+					wagerMode: el('optWager').checked,
 				}
 			}
 			function pushOptions() {
 				sock.send({ t: 'host:options', options: readOptions() })
 			}
 
-			for (const id of ['optBank', 'optTeam', 'optTeamCount', 'optShuffle', 'optCount'])
+			for (const id of [
+				'optBank',
+				'optTeam',
+				'optTeamCount',
+				'optShuffle',
+				'optCount',
+				'optWager',
+			])
 				el(id).addEventListener('change', pushOptions)
 
 			// Tampilkan/sembunyikan panel "Jumlah tim" + tombol kocok ulang cuma
 			// saat mode tim menyala - dulu opsi ini tidak ada sama sekali.
 			el('optTeam').addEventListener('change', () => {
 				el('teamModeExtra').classList.toggle('hidden', !el('optTeam').checked)
+			})
+
+			// Panel pilihan bantuan (clue / 50:50) cuma relevan kalau mode taruhan
+			// menyala - mode baru ini tidak menggantikan mode biasa.
+			el('optWager').addEventListener('change', () => {
+				el('hintPanel').classList.toggle('hidden', !el('optWager').checked)
 			})
 
 			el('btnShuffleTeams').addEventListener('click', () => {
@@ -332,10 +378,10 @@
 
 			el('start').onclick = () => {
 				pushOptions()
-				sock.send({ t: 'host:start' })
+				sock.send({ t: 'host:start', hint: el('gHint').value })
 			}
 			el('btnReveal').onclick = () => sock.send({ t: 'host:reveal' })
-			el('btnNext').onclick = () => sock.send({ t: 'host:next' })
+			el('btnNext').onclick = () => sock.send({ t: 'host:next', hint: el('gHint').value })
 			el('btnAgain').onclick = () => sock.send({ t: 'host:restart' })
 
 			document.addEventListener('keydown', (e) => {
@@ -381,6 +427,8 @@
 					el('optTeam').checked = !!m.options.teamMode
 					el('optTeamCount').value = m.options.teamCount || 2
 					el('teamModeExtra').classList.toggle('hidden', !m.options.teamMode)
+					el('optWager').checked = !!m.options.wagerMode
+					el('hintPanel').classList.toggle('hidden', !m.options.wagerMode)
 					el('urls').innerHTML = m.joinUrls.length
 						? m.joinUrls
 								.map(
@@ -400,16 +448,53 @@
 					if (m.phase === 'lobby') show('lobby')
 				} else if (m.t === 'lobby') {
 					show('lobby')
+				} else if (m.t === 'wager') {
+					// Fase pasang taruhan (mode taruhan) - host TIDAK melihat soal di
+					// sini, cuma info bantuan yang berlaku dan progres pemasangan.
+					phaseForProgress = 'wager'
+					lastTick = 0
+					show('game')
+					el('gWagerWait').classList.remove('hidden')
+					el('gameGrid').classList.add('hidden')
+					el('gType').textContent = 'Pasang Taruhan'
+					el('gPos').textContent = 'Kartu ' + (m.index + 1) + ' / ' + m.total
+					el('gWagerHintInfo').textContent =
+						m.hintLevel === 'clue' && m.clue
+							? 'Clue untuk peserta: ' + m.clue
+							: m.hintLevel === 'half'
+								? 'Bantuan 50:50 aktif - 2 opsi salah akan disembunyikan saat soal tampil.'
+								: 'Tanpa bantuan untuk kartu ini.'
+					el('btnReveal').classList.add('hidden')
+					el('btnNext').classList.add('hidden')
+
+					stopTimer?.()
+					stopTimer = startTimer(m.pickSeconds, {
+						onTick: (left, frac) => {
+							const t = el('gTimer')
+							t.firstElementChild.style.width = frac * 100 + '%'
+							t.className =
+								'timer' + (frac < 0.2 ? ' danger' : frac < 0.5 ? ' warn' : '')
+						},
+					})
 				} else if (m.t === 'card') {
+					phaseForProgress = 'question'
 					current = m
 					lastTick = 0
 					show('game')
+					el('gWagerWait').classList.add('hidden')
+					el('gameGrid').classList.remove('hidden')
 					el('gFlip').classList.remove('is-flipped')
 					el('gType').textContent = m.typeLabel
 					el('gPos').textContent = 'Kartu ' + (m.index + 1) + ' / ' + m.total
 					el('gPrompt').textContent = m.prompt
 					el('gCode').innerHTML = highlight(m.code, m.lang)
 					el('gOpts').innerHTML = optionButtonsHtml(m.options)
+					if (m.eliminated && m.eliminated.length) {
+						for (const idx of m.eliminated) {
+							const b = el('gOpts').children[idx]
+							if (b) b.classList.add('opt-eliminated')
+						}
+					}
 					el('btnReveal').classList.remove('hidden')
 					el('btnNext').classList.add('hidden')
 
@@ -432,7 +517,10 @@
 					})
 				} else if (m.t === 'progress') {
 					el('gAnswered').textContent =
-						m.answered + ' dari ' + m.total + ' menjawab'
+						m.answered +
+						' dari ' +
+						m.total +
+						(phaseForProgress === 'wager' ? ' memasang taruhan' : ' menjawab')
 				} else if (m.t === 'reveal') {
 					stopTimer?.()
 					sfxReveal()
