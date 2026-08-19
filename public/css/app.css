@@ -356,6 +356,20 @@ pre {
 	cursor: default;
 }
 
+/* Opsi yang dibuang oleh bantuan 50:50 di mode taruhan - tampak redup,
+ * dicoret, dan tidak bisa diklik (dipasangkan dengan disabled/pointer-events
+ * di JS host.html & play.html). */
+.opt-eliminated {
+	opacity: 0.35;
+	text-decoration: line-through;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+.opt-eliminated:hover {
+	border-color: var(--border);
+	background: var(--canvas);
+}
+
 .timer {
 	height: 8px;
 	border-radius: 999px;
@@ -483,6 +497,14 @@ pre {
 	background: var(--orange-soft);
 	border-color: #f2d8bf;
 	color: #9a5a24;
+}
+
+/* Tombol pilihan stake di mode taruhan (25/50/100) - pakai .chip sebagai
+ * dasar, ditambah font monospace supaya angka poinnya lebih jelas. */
+.wager-chip {
+	font-family: var(--mono);
+	font-weight: 700;
+	min-height: 40px;
 }
 
 .toggle {

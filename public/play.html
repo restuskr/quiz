@@ -466,4 +466,101 @@
 					el('pVerdict').textContent = !m.answered
 						? noAnswerPenalty
 							? 'Tidak menjawab (kena penalti)'
-		
+							: 'Tidak sempat menjawab'
+						: m.correct
+							? 'Benar!'
+							: 'Belum tepat'
+					el('pPoints').textContent = (m.points >= 0 ? '+' : '') + m.points
+					if (m.answered && m.correct && m.breakdown) {
+						el('pBreakdown').classList.remove('hidden')
+						if (wagerModeActive && m.breakdown.stake !== undefined) {
+							el('pBreakdown').innerHTML =
+								'<div class="row between text-small"><span class="muted">Taruhan (benar)</span><strong>+' +
+								m.breakdown.stake +
+								'</strong></div>' +
+								(m.breakdown.streakBonus > 0
+									? '<div class="row between text-small"><span class="muted">Bonus beruntun</span><strong>+' +
+										m.breakdown.streakBonus +
+										'</strong></div>'
+									: '')
+						} else {
+							const secs = ((m.ms || 0) / 1000).toFixed(1)
+							el('pBreakdown').innerHTML =
+								'<div class="row between text-small"><span class="muted">Poin dasar (jawaban benar)</span><strong>+' +
+								m.breakdown.base +
+								'</strong></div>' +
+								'<div class="row between text-small"><span class="muted">Bonus cepat (jawab dlm ' +
+								secs +
+								' dtk)</span><strong>+' +
+								m.breakdown.speedBonus +
+								'</strong></div>' +
+								(m.breakdown.streakBonus > 0
+									? '<div class="row between text-small"><span class="muted">Bonus beruntun</span><strong>+' +
+										m.breakdown.streakBonus +
+										'</strong></div>'
+									: '')
+						}
+					} else if (!m.answered && noAnswerPenalty) {
+						el('pBreakdown').classList.remove('hidden')
+						el('pBreakdown').innerHTML =
+							'<div class="row between text-small"><span class="muted">Penalti tidak menjawab</span><strong>-' +
+							noAnswerPenalty +
+							'</strong></div>'
+					} else if (
+						wagerModeActive &&
+						m.answered &&
+						!m.correct &&
+						m.breakdown &&
+						m.breakdown.stake !== undefined
+					) {
+						el('pBreakdown').classList.remove('hidden')
+						el('pBreakdown').innerHTML =
+							'<div class="row between text-small"><span class="muted">Taruhan (salah)</span><strong>-' +
+							m.breakdown.stake +
+							'</strong></div>'
+					} else {
+						el('pBreakdown').classList.add('hidden')
+						el('pBreakdown').innerHTML = ''
+					}
+					el('pRank').textContent = 'Peringkat ' + (m.rank || '-') + ' dari ' + m.of
+					el('pStreak').textContent =
+						m.streak > 1 ? '🔥 ' + m.streak + ' benar beruntun' : 'Total ' + m.score
+				} else if (m.t === 'end') {
+					stopTimer?.()
+					show('end')
+					const me = m.leaderboard.find((p) => p.pid === myPid)
+					// Fanfare untuk semua, confetti besar khusus yang finis 3 besar.
+					sfxFanfare()
+					if (me && me.rank <= 3) confettiBurst(true)
+					el('eMine').innerHTML = me
+						? '<div class="text-center">' +
+							'<div class="label">Peringkat kamu' +
+							(me.team ? ' &middot; Tim ' + me.team : '') +
+							'</div>' +
+							'<div class="code-display code-display--compact">#' +
+							me.rank +
+							'</div>' +
+							'<div class="muted">' +
+							me.score +
+							' poin &middot; ' +
+							me.correct +
+							' dari ' +
+							m.total +
+							' benar</div></div>'
+						: ''
+					// Tim kamu + total skor tim - dulu tidak ditampilkan sama sekali
+					// di layar siswa, jadi siswa cuma lihat skor pribadi tanpa tahu
+					// timnya menang/kalah atau totalnya berapa.
+					el('eTeams').innerHTML = teamsSummaryHtml(m.teams, {
+						highlightTeam: me ? me.team : null,
+						final: true,
+					})
+					el('eBoard').innerHTML = leaderboardRowsHtml(m.leaderboard, {
+						highlightPid: myPid,
+						showTeam: !!m.teams,
+					})
+				}
+			}
+		</script>
+	</body>
+</html>
