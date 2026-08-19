@@ -13,7 +13,8 @@
     ],
     "answer": 1,
     "explanation": "75 >= 75 bernilai true, jadi blok if yang dijalankan.",
-    "timeLimit": 20
+    "timeLimit": 20,
+    "clue": "Bandingkan langsung 75 dengan 75 - lihat baik-baik operatornya, >= beda arti dengan >."
   },
   {
     "id": "c02",
@@ -29,7 +30,8 @@
     ],
     "answer": 1,
     "explanation": "Angka 0 itu falsy. Nilai falsy lain: string kosong, null, undefined, NaN, false.",
-    "timeLimit": 20
+    "timeLimit": 20,
+    "clue": "Angka 0 dianggap seperti apa oleh if - true atau false?"
   },
   {
     "id": "c03",
@@ -45,7 +47,8 @@
     ],
     "answer": 3,
     "explanation": "x = 5 itu pengisian nilai: x diisi 5, lalu if menilai hasil pengisian itu, yaitu 5, dan 5 bersifat truthy. Perbandingan yang benar adalah x === 5.",
-    "timeLimit": 25
+    "timeLimit": 25,
+    "clue": "Perhatikan jumlah tanda '=' di dalam kurung if - satu vs dua/tiga artinya beda jauh."
   },
   {
     "id": "c04",
@@ -61,7 +64,8 @@
     ],
     "answer": 3,
     "explanation": "Sisa bagi 2 sama dengan 0 artinya genap. Kalau hasilnya 1 berarti ganjil.",
-    "timeLimit": 15
+    "timeLimit": 15,
+    "clue": "Operator % menghasilkan SISA pembagian. Sisa 0 dari pembagian 2 artinya apa?"
   },
   {
     "id": "c05",
@@ -77,7 +81,8 @@
     ],
     "answer": 0,
     "explanation": "82 gagal di >= 90, lolos di >= 80. Begitu satu cabang cocok, sisanya dilewati.",
-    "timeLimit": 20
+    "timeLimit": 20,
+    "clue": "Cek satu per satu dari atas: 82 >= 90? Kalau gagal, lanjut ke kondisi berikutnya."
   },
   {
     "id": "c06",
@@ -93,7 +98,8 @@
     ],
     "answer": 0,
     "explanation": "Operator == mengonversi tipe dulu (loose). Operator === membandingkan nilai DAN tipe (strict). Biasakan pakai ===.",
-    "timeLimit": 20
+    "timeLimit": 20,
+    "clue": "== boleh beda tipe asal nilainya cocok setelah dikonversi. === tidak boleh beda tipe sama sekali."
   },
   {
     "id": "c07",
@@ -109,7 +115,8 @@
     ],
     "answer": 1,
     "explanation": "Case tanpa break sengaja jatuh ke case berikutnya. Sabtu dan Minggu berbagi satu blok.",
-    "timeLimit": 25
+    "timeLimit": 25,
+    "clue": "Perhatikan: case 'Sabtu' tidak punya break sendiri sebelum case 'Minggu'. Apa artinya itu?"
   },
   {
     "id": "c08",
@@ -125,7 +132,8 @@
     ],
     "answer": 0,
     "explanation": "Tanpa break, eksekusi lanjut ke case di bawahnya. Ini disebut fall-through.",
-    "timeLimit": 25
+    "timeLimit": 25,
+    "clue": "Cari statement yang biasanya dipakai untuk 'berhenti' setelah satu case selesai - ada atau tidak di sini?"
   },
   {
     "id": "c09",
@@ -141,7 +149,8 @@
     ],
     "answer": 3,
     "explanation": "Ternary: kondisi ? nilaiJikaTrue : nilaiJikaFalse. Ringkas untuk if-else sederhana.",
-    "timeLimit": 15
+    "timeLimit": 15,
+    "clue": "Bentuk ternary itu 'kondisi ? nilaiJikaBenar : nilaiJikaSalah'. Apakah 17 >= 17 itu benar?"
   },
   {
     "id": "c10",
@@ -157,7 +166,8 @@
     ],
     "answer": 2,
     "explanation": "a > 3 bernilai true, masuk blok luar. Di dalam, b > 20 false, jadi else dalam yang jalan.",
-    "timeLimit": 25
+    "timeLimit": 25,
+    "clue": "Ini if bersarang (nested). Cek kondisi luar dulu (a > 3), baru masuk ke kondisi dalam (b > 20)."
   },
   {
     "id": "c11",
@@ -173,7 +183,8 @@
     ],
     "answer": 1,
     "explanation": "Operator && butuh KEDUA sisi bernilai true. Ini pola standar validasi rentang.",
-    "timeLimit": 15
+    "timeLimit": 15,
+    "clue": "Operator && artinya 'DAN' - kedua syarat harus terpenuhi bersamaan."
   },
   {
     "id": "c12",
@@ -189,7 +200,8 @@
     ],
     "answer": 3,
     "explanation": "Operator || cukup salah satu true. Operator && harus dua-duanya true, sedangkan a bernilai false.",
-    "timeLimit": 20
+    "timeLimit": 20,
+    "clue": "|| cukup salah satu true. && butuh KEDUANYA true. Di sini a selalu false."
   },
   {
     "id": "c13",
@@ -205,7 +217,8 @@
     ],
     "answer": 1,
     "explanation": "Nilai 95 sudah cocok di >= 70 duluan, jadi berhenti di situ. Urutkan dari kondisi paling ketat.",
-    "timeLimit": 30
+    "timeLimit": 30,
+    "clue": "Cek urutan syarat dari atas ke bawah - kondisi mana yang lebih dulu 'menangkap' nilai besar seperti 95?"
   },
   {
     "id": "c14",
@@ -221,7 +234,8 @@
     ],
     "answer": 2,
     "explanation": "String kosong itu falsy, jadi eksekusi masuk ke blok else.",
-    "timeLimit": 20
+    "timeLimit": 20,
+    "clue": "String kosong '' dianggap if seperti apa - benar atau salah?"
   },
   {
     "id": "c15",
@@ -237,7 +251,8 @@
     ],
     "answer": 0,
     "explanation": "Kondisi 1 dan 2 sama-sama gagal karena usia kurang dari 17, jadi jatuh ke else terakhir.",
-    "timeLimit": 25
+    "timeLimit": 25,
+    "clue": "usia = 15. Cek dulu apakah usia >= 17 itu terpenuhi atau tidak, di kedua kondisi if/else if."
   },
   {
     "id": "c16",
@@ -253,7 +268,8 @@
     ],
     "answer": 0,
     "explanation": "Tanpa kurung kurawal, if hanya mengikat SATU statement. Baris B selalu jalan. Indentasi menipu!",
-    "timeLimit": 30
+    "timeLimit": 30,
+    "clue": "Perhatikan: tidak ada kurung kurawal { } setelah if. Berapa baris yang sebenarnya 'ikut' if itu?"
   },
   {
     "id": "c17",
@@ -269,7 +285,8 @@
     ],
     "answer": 2,
     "explanation": "Ternary adalah bentuk ringkas if-else yang menghasilkan sebuah nilai.",
-    "timeLimit": 25
+    "timeLimit": 25,
+    "clue": "Cari opsi berbentuk 'kondisi ? nilaiA : nilaiB' - itu bentuk ringkas if-else."
   },
   {
     "id": "c18",
@@ -285,6 +302,7 @@
     ],
     "answer": 2,
     "explanation": "Operator ?? hanya menangkap null dan undefined, tidak seperti || yang juga menangkap 0 dan string kosong.",
-    "timeLimit": 25
+    "timeLimit": 25,
+    "clue": "Operator ?? cuma bereaksi kalau nilai kirinya null atau undefined. harga di sini null."
   }
 ]

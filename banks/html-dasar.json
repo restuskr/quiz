@@ -14,7 +14,8 @@
     ],
     "answer": 1,
     "explanation": "Tag <strong> membuat teks di dalamnya tampil tebal. Hanya kata yang dibungkus tag itu yang terpengaruh.",
-    "timeLimit": 15
+    "timeLimit": 15,
+    "clue": "Cari kata yang dibungkus langsung oleh tag <strong>...</strong>."
   },
   {
     "id": "c20",
@@ -31,7 +32,8 @@
     ],
     "answer": 0,
     "explanation": "Tidak ada </h1> penutup, jadi browser menganggap semua konten setelahnya - termasuk paragraf - masih ada di dalam heading tersebut.",
-    "timeLimit": 25
+    "timeLimit": 25,
+    "clue": "Cari tag penutup </h1> di kode ini - ada atau tidak?"
   },
   {
     "id": "c21",
@@ -48,7 +50,8 @@
     ],
     "answer": 0,
     "explanation": "Atribut yang benar untuk sumber gambar adalah src. Browser diam-diam mengabaikan atribut yang tidak dikenalnya, seperti source.",
-    "timeLimit": 20
+    "timeLimit": 20,
+    "clue": "Nama atribut yang benar untuk sumber gambar itu singkatan dari 'source' - tapi ditulis lebih pendek."
   },
   {
     "id": "c22",
@@ -65,7 +68,8 @@
     ],
     "answer": 3,
     "explanation": "Tag <a> (anchor) dengan atribut href dipakai untuk membuat tautan ke halaman atau alamat lain.",
-    "timeLimit": 15
+    "timeLimit": 15,
+    "clue": "Atribut href biasanya berisi alamat/URL tujuan."
   },
   {
     "id": "c23",
@@ -82,6 +86,7 @@
     ],
     "answer": 2,
     "explanation": "Anak langsung adalah elemen satu level tepat di dalam <div>, yaitu <h2> dan <p>. <span> adalah cucu karena bersarang di dalam <p>.",
-    "timeLimit": 25
+    "timeLimit": 25,
+    "clue": "'Anak langsung' cuma satu tingkat ke dalam. <span> ada di dalam <p> - jadi levelnya lebih dalam lagi."
   }
 ]
