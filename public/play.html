@@ -1,582 +1,585 @@
 <!doctype html>
 <html lang="id">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Main - Branch Battle</title>
-		<link rel="stylesheet" href="/css/app.css" />
-	</head>
-	<body>
-		<div class="wrap wrap-narrow">
-			<!-- ============================ JOIN ============================= -->
-			<section id="join" class="stack">
-				<div class="stack gap-2">
-					<span class="pill pill-blue">Branch Battle</span>
-					<h1 class="page-title">Gabung room</h1>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Main - Branch Battle</title>
+	<link rel="stylesheet" href="/css/app.css" />
+</head>
+
+<body>
+	<div class="wrap wrap-narrow">
+		<!-- ============================ JOIN ============================= -->
+		<section id="join" class="stack">
+			<div class="stack gap-2">
+				<span class="pill pill-blue">Branch Battle</span>
+				<h1 class="page-title">Gabung room</h1>
+			</div>
+			<div class="card stack">
+				<div>
+					<span class="label">Kode room</span>
+					<input class="input code-input" id="fCode" maxlength="4" autocomplete="off" placeholder="ABCD" />
 				</div>
-				<div class="card stack">
-					<div>
-						<span class="label">Kode room</span>
-						<input
-							class="input code-input"
-							id="fCode"
-							maxlength="4"
-							autocomplete="off"
-							placeholder="ABCD"
-						/>
+				<div>
+					<span class="label">Nama kamu</span>
+					<input class="input" id="fName" maxlength="20" autocomplete="off" placeholder="Contoh: Sinta" />
+				</div>
+				<div id="jErr" class="banner banner-red hidden"></div>
+				<button class="btn btn-primary btn-block" id="btnJoin">Masuk</button>
+			</div>
+		</section>
+
+		<!-- ============================ WAIT ============================= -->
+		<section id="wait" class="hidden stack text-center">
+			<div class="card stack">
+				<span class="pill pill-green mx-auto">Sudah masuk</span>
+				<h1 class="page-title" id="wName">-</h1>
+				<p class="muted m-0">
+					Tunggu guru memulai kuis. Jangan tutup halaman ini.
+				</p>
+			</div>
+		</section>
+
+		<!-- ======================= WAGER (mode taruhan) ==================== -->
+		<section id="wager" class="hidden stack text-center">
+			<div class="card stack">
+				<span class="pill pill-orange mx-auto" id="wgPos">-</span>
+				<h1 class="page-title">Pasang taruhanmu!</h1>
+				<p class="muted m-0" id="wgHintInfo">-</p>
+				<div class="timer mb-4" id="wgTimer"><i></i></div>
+				<div class="chips mx-auto" id="wgChoices"></div>
+				<div class="opts hidden" id="wgHalfOptions"></div>
+				<p class="muted text-small m-0" id="wgPicked">
+					Belum memilih - kalau waktu habis, otomatis 50 poin.
+				</p>
+			</div>
+		</section>
+
+		<!-- ============================ GAME ============================= -->
+		<section id="game" class="hidden">
+			<div class="row between mb-5">
+				<span class="pill pill-orange" id="pType">-</span>
+				<div class="row gap-3">
+					<span class="pill" id="pPos">-</span>
+					<span class="pill pill-blue" id="pScore">0</span>
+				</div>
+			</div>
+			<div id="pTeams"></div>
+			<div class="timer mb-6" id="pTimer"><i></i></div>
+
+			<div class="flip" id="pFlip">
+				<div class="flip-inner" id="pInner">
+					<div class="flip-face stack" id="pFront">
+						<h2 id="pPrompt" class="text-lg">-</h2>
+						<pre class="codebox" id="pCode"></pre>
+						<div class="opts" id="pOpts"></div>
+						<p id="pHint" class="muted hint text-center">
+							Makin cepat menjawab, makin besar poinnya.
+						</p>
 					</div>
-					<div>
-						<span class="label">Nama kamu</span>
-						<input
-							class="input"
-							id="fName"
-							maxlength="20"
-							autocomplete="off"
-							placeholder="Contoh: Sinta"
-						/>
-					</div>
-					<div id="jErr" class="banner banner-red hidden"></div>
-					<button class="btn btn-primary btn-block" id="btnJoin">Masuk</button>
-				</div>
-			</section>
-
-			<!-- ============================ WAIT ============================= -->
-			<section id="wait" class="hidden stack text-center">
-				<div class="card stack">
-					<span class="pill pill-green mx-auto">Sudah masuk</span>
-					<h1 class="page-title" id="wName">-</h1>
-					<p class="muted m-0">
-						Tunggu guru memulai kuis. Jangan tutup halaman ini.
-					</p>
-				</div>
-			</section>
-
-			<!-- ======================= WAGER (mode taruhan) ==================== -->
-			<section id="wager" class="hidden stack text-center">
-				<div class="card stack">
-					<span class="pill pill-orange mx-auto" id="wgPos">-</span>
-					<h1 class="page-title">Pasang taruhanmu!</h1>
-					<p class="muted m-0" id="wgHintInfo">-</p>
-					<div class="timer mb-4" id="wgTimer"><i></i></div>
-					<div class="chips mx-auto" id="wgChoices"></div>
-					<div class="opts hidden" id="wgHalfOptions"></div>
-					<p class="muted text-small m-0" id="wgPicked">
-						Belum memilih - kalau waktu habis, otomatis 50 poin.
-					</p>
-				</div>
-			</section>
-
-			<!-- ============================ GAME ============================= -->
-			<section id="game" class="hidden">
-				<div class="row between mb-5">
-					<span class="pill pill-orange" id="pType">-</span>
-					<div class="row gap-3">
-						<span class="pill" id="pPos">-</span>
-						<span class="pill pill-blue" id="pScore">0</span>
-					</div>
-				</div>
-				<div class="timer mb-6" id="pTimer"><i></i></div>
-
-				<div class="flip" id="pFlip">
-					<div class="flip-inner" id="pInner">
-						<div class="flip-face stack" id="pFront">
-							<h2 id="pPrompt" class="text-lg">-</h2>
-							<pre class="codebox" id="pCode"></pre>
-							<div class="opts" id="pOpts"></div>
-							<p id="pHint" class="muted hint text-center">
-								Makin cepat menjawab, makin besar poinnya.
-							</p>
-						</div>
-						<div class="flip-face flip-back stack" id="pBack">
-							<div class="stack gap-3 text-center">
-								<div id="pMark" class="result-mark">-</div>
-								<h2 id="pVerdict" class="text-xl">-</h2>
-								<div class="lb-score text-2xl" id="pPoints">+0</div>
-								<div id="pBreakdown" class="stack gap-1 hidden"></div>
-								<div class="row justify-center gap-3">
-									<span class="pill" id="pRank">-</span>
-									<span class="pill" id="pStreak">-</span>
-								</div>
+					<div class="flip-face flip-back stack" id="pBack">
+						<div class="stack gap-3 text-center">
+							<div id="pMark" class="result-mark">-</div>
+							<h2 id="pVerdict" class="text-xl">-</h2>
+							<div class="lb-score text-2xl" id="pPoints">+0</div>
+							<div id="pBreakdown" class="stack gap-1 hidden"></div>
+							<div class="row justify-center gap-3">
+								<span class="pill" id="pRank">-</span>
+								<span class="pill" id="pStreak">-</span>
 							</div>
-							<hr class="divider" />
-							<span class="label m-0">Soal tadi</span>
-							<h3 id="pBackPrompt" class="text-caption font-semibold">-</h3>
-							<pre class="codebox" id="pBackCode"></pre>
-							<div class="banner banner-green" id="pKey">-</div>
-							<p id="pWhy" class="muted m-0 text-small">-</p>
 						</div>
+						<hr class="divider" />
+						<span class="label m-0">Soal tadi</span>
+						<h3 id="pBackPrompt" class="text-caption font-semibold">-</h3>
+						<pre class="codebox" id="pBackCode"></pre>
+						<div class="banner banner-green" id="pKey">-</div>
+						<p id="pWhy" class="muted m-0 text-small">-</p>
 					</div>
 				</div>
+			</div>
 
-				<div class="row gap-3 mt-6">
-					<span class="dot" id="dot"></span>
-					<span class="muted text-caption" id="status">-</span>
-				</div>
-			</section>
+			<div class="row gap-3 mt-6">
+				<span class="dot" id="dot"></span>
+				<span class="muted text-caption" id="status">-</span>
+			</div>
+		</section>
 
-			<!-- ============================= END ============================== -->
-			<section id="end" class="hidden stack">
-				<div class="stack gap-2 text-center">
-					<span class="pill pill-green mx-auto">Selesai</span>
-					<h1 class="page-title">Hasil akhir</h1>
-				</div>
-				<div class="card stack" id="eMine"></div>
-				<div id="eTeams"></div>
-				<div class="card"><div class="lb" id="eBoard"></div></div>
-			</section>
-		</div>
+		<!-- ============================= END ============================== -->
+		<section id="end" class="hidden stack">
+			<div class="stack gap-2 text-center">
+				<span class="pill pill-green mx-auto">Selesai</span>
+				<h1 class="page-title">Hasil akhir</h1>
+			</div>
+			<div class="card stack" id="eMine"></div>
+			<div id="eTeams"></div>
+			<div class="card">
+				<div class="lb" id="eBoard"></div>
+			</div>
+		</section>
+	</div>
 
-		<script type="module">
-			import {
-				connect,
-				el,
-				highlight,
-				escapeHtml,
-				LETTERS,
-				startTimer,
-				optionButtonsHtml,
-				leaderboardRowsHtml,
-				teamsSummaryHtml,
-				unlockSfx,
-				sfxTick,
-				sfxFanfare,
-				confettiBurst,
-			} from '/js/common.js'
+	<script type="module">
+		import {
+			connect,
+			el,
+			highlight,
+			escapeHtml,
+			LETTERS,
+			startTimer,
+			optionButtonsHtml,
+			leaderboardRowsHtml,
+			teamsSummaryHtml,
+			unlockSfx,
+			sfxTick,
+			sfxFanfare,
+			confettiBurst,
+		} from '/js/common.js'
 
-			let joined = false
-			let stopTimer = null
-			let current = null
-			let lastTick = 0
-			let myPid = localStorage.getItem('bb_pid') || null
-			// Diset true begitu pesan 'wager' pertama diterima - dipakai untuk
-			// menyesuaikan teks hint di kartu soal (mode taruhan tidak punya
-			// bonus kecepatan, jadi teksnya beda dari mode biasa).
-			let wagerModeActive = false
-			// Daftar pilihan taruhan (stake tetap + dinamis 'Setengah'/'All In')
-			// dari pesan 'wager' TERAKHIR - dipakai untuk menampilkan label yang
-			// pas (bukan cuma angka) di wgPicked/wagerAck.
-			let currentWagerChoices = []
+		let joined = false
+		let stopTimer = null
+		let current = null
+		let lastTick = 0
+		let myPid = localStorage.getItem('bb_pid') || null
+		// Diset true begitu pesan 'wager' pertama diterima - dipakai untuk
+		// menyesuaikan teks hint di kartu soal (mode taruhan tidak punya
+		// bonus kecepatan, jadi teksnya beda dari mode biasa).
+		let wagerModeActive = false
+		// Daftar pilihan taruhan (stake tetap + dinamis 'Setengah'/'All In')
+		// dari pesan 'wager' TERAKHIR - dipakai untuk menampilkan label yang
+		// pas (bukan cuma angka) di wgPicked/wagerAck.
+		let currentWagerChoices = []
 
-			// Suara saat jawaban dibuka: benar -> true.mp3, salah/tidak menjawab
-			// -> false.mp3. File-nya ditaruh di public/sounds/ (lihat README di
-			// folder itu). "Unlock" sekali lewat gesture pengguna supaya HP
-			// (terutama iOS Safari) tidak memblokir play() otomatis nanti saat
-			// reveal - saat itu tidak ada klik baru dari siswa. unlockSfx()
-			// sekalian membuka AudioContext untuk tick countdown & fanfare
-			// (bunyi synthesize Web Audio, tanpa file - lihat common.js).
-			const sndTrue = new Audio('/sounds/true.mp3')
-			const sndFalse = new Audio('/sounds/false.mp3')
-			let audioUnlocked = false
-			function unlockAudio() {
-				unlockSfx()
-				if (audioUnlocked) return
-				audioUnlocked = true
-				for (const a of [sndTrue, sndFalse]) {
-					a.play()
-						.then(() => {
-							a.pause()
-							a.currentTime = 0
-						})
-						.catch(() => {})
-				}
+		// Suara saat jawaban dibuka: benar -> true.mp3, salah/tidak menjawab
+		// -> false.mp3. File-nya ditaruh di public/sounds/ (lihat README di
+		// folder itu). "Unlock" sekali lewat gesture pengguna supaya HP
+		// (terutama iOS Safari) tidak memblokir play() otomatis nanti saat
+		// reveal - saat itu tidak ada klik baru dari siswa. unlockSfx()
+		// sekalian membuka AudioContext untuk tick countdown & fanfare
+		// (bunyi synthesize Web Audio, tanpa file - lihat common.js).
+		const sndTrue = new Audio('/sounds/true.mp3')
+		const sndFalse = new Audio('/sounds/false.mp3')
+		let audioUnlocked = false
+		function unlockAudio() {
+			unlockSfx()
+			if (audioUnlocked) return
+			audioUnlocked = true
+			for (const a of [sndTrue, sndFalse]) {
+				a.play()
+					.then(() => {
+						a.pause()
+						a.currentTime = 0
+					})
+					.catch(() => { })
 			}
-			function playResultSound(correct) {
-				const a = correct ? sndTrue : sndFalse
-				a.currentTime = 0
-				a.play().catch(() => {})
-			}
+		}
+		function playResultSound(correct) {
+			const a = correct ? sndTrue : sndFalse
+			a.currentTime = 0
+			a.play().catch(() => { })
+		}
 
-			el('fCode').value = localStorage.getItem('bb_code') || ''
-			el('fName').value = localStorage.getItem('bb_name') || ''
+		el('fCode').value = localStorage.getItem('bb_code') || ''
+		el('fName').value = localStorage.getItem('bb_name') || ''
 
-			// Catatan refactor: fitCard()/ResizeObserver lama dihapus. Tinggi kartu
-			// depan/belakang sekarang murni CSS Grid (lihat .flip-inner di
-			// app.css) sehingga tidak lagi salah ukur saat animasi flip 600ms masih
-			// berjalan - itulah penyebab blok kode di sisi jawaban kepotong/terlalu
-			// tinggi di HP walau tampak normal di layar besar.
+		// Catatan refactor: fitCard()/ResizeObserver lama dihapus. Tinggi kartu
+		// depan/belakang sekarang murni CSS Grid (lihat .flip-inner di
+		// app.css) sehingga tidak lagi salah ukur saat animasi flip 600ms masih
+		// berjalan - itulah penyebab blok kode di sisi jawaban kepotong/terlalu
+		// tinggi di HP walau tampak normal di layar besar.
 
-			const sock = connect({
-				onMessage: onMessage,
-				onStatus: (s) => {
-					el('dot').className =
-						'dot ' + (s === 'online' ? 'on' : s === 'offline' ? 'off' : '')
-					el('status').textContent =
-						s === 'online'
-							? 'tersambung'
-							: s === 'offline'
-								? 'terputus - menyambung ulang'
-								: 'menyambung...'
-					if (s === 'online' && joined) doJoin()
-				},
+		const sock = connect({
+			onMessage: onMessage,
+			onStatus: (s) => {
+				el('dot').className =
+					'dot ' + (s === 'online' ? 'on' : s === 'offline' ? 'off' : '')
+				el('status').textContent =
+					s === 'online'
+						? 'tersambung'
+						: s === 'offline'
+							? 'terputus - menyambung ulang'
+							: 'menyambung...'
+				if (s === 'online' && joined) doJoin()
+			},
+		})
+
+		function doJoin() {
+			sock.send({
+				t: 'player:join',
+				code: el('fCode').value.trim().toUpperCase(),
+				name: el('fName').value.trim(),
+				pid: myPid || undefined,
 			})
+		}
 
-			function doJoin() {
-				sock.send({
-					t: 'player:join',
-					code: el('fCode').value.trim().toUpperCase(),
-					name: el('fName').value.trim(),
-					pid: myPid || undefined,
+		el('btnJoin').onclick = () => {
+			unlockAudio()
+			const code = el('fCode').value.trim().toUpperCase()
+			const name = el('fName').value.trim()
+			if (code.length !== 4 || !name) {
+				showErr('Isi kode room (4 huruf) dan nama kamu.')
+				return
+			}
+			if (localStorage.getItem('bb_code') !== code) myPid = null
+			doJoin()
+		}
+		el('fCode').addEventListener('keydown', (e) => {
+			if (e.key === 'Enter') el('fName').focus()
+		})
+		el('fName').addEventListener('keydown', (e) => {
+			if (e.key === 'Enter') el('btnJoin').click()
+		})
+
+		function showErr(msg) {
+			el('jErr').textContent = msg
+			el('jErr').classList.remove('hidden')
+		}
+
+		function show(which) {
+			for (const id of ['join', 'wait', 'wager', 'game', 'end'])
+				el(id).classList.toggle('hidden', id !== which)
+		}
+
+		function pick(i) {
+			// current.locked cuma jadi true kalau waktu habis atau jawaban
+			// sudah dibuka (lihat onDone timer & handler 'result') - selama
+			// belum itu, siswa bebas ganti pilihan berkali-kali.
+			if (!current || current.locked) return
+			// Opsi yang sudah dibuang oleh bantuan 50:50 (mode taruhan) tidak
+			// bisa dipilih - tombolnya juga sudah di-disable, ini jaga-jaga
+			// untuk jalur pintasan keyboard.
+			if (current.eliminated && current.eliminated.includes(i)) return
+			unlockAudio()
+			current.chosen = i
+			sock.send({ t: 'player:answer', choice: i })
+			for (const b of el('pOpts').children) {
+				b.classList.toggle('is-picked', Number(b.dataset.i) === i)
+			}
+			el('pHint').textContent =
+				'Jawaban tersimpan: ' + LETTERS[i] + '. Masih bisa diganti sebelum waktu habis.'
+		}
+
+		document.addEventListener('keydown', (e) => {
+			if (el('game').classList.contains('hidden') || !current) return
+			const k = e.key.toUpperCase()
+			const byLetter = LETTERS.indexOf(k)
+			const byNum = /^[1-9]$/.test(k) ? Number(k) - 1 : -1
+			const i = byLetter >= 0 ? byLetter : byNum
+			if (i >= 0 && i < current.options.length) pick(i)
+		})
+
+		// choices: array {stake, kind, label} dari server (lihat wagerChoicesFor
+		// di lib/game.js) - kind 'half'/'all_in' dapat kelas tambahan supaya
+		// tampilannya beda (lebih "berani") dari pilihan stake tetap.
+		function renderWagerChoices(choices, picked) {
+			return choices
+				.map(
+					(c) =>
+						'<button type="button" class="chip wager-chip' +
+						(c.kind === 'half'
+							? ' wager-chip-half'
+							: c.kind === 'all_in'
+								? ' wager-chip-allin'
+								: '') +
+						(c.stake === picked ? ' a' : '') +
+						'" data-stake="' +
+						c.stake +
+						'">' +
+						escapeHtml(c.label) +
+						'</button>',
+				)
+				.join('')
+		}
+
+		function sendWager(stake) {
+			unlockAudio()
+			sock.send({ t: 'player:wager', stake })
+			for (const c of el('wgChoices').children) {
+				c.classList.toggle('a', Number(c.dataset.stake) === stake)
+			}
+			const picked = currentWagerChoices.find((c) => c.stake === stake)
+			el('wgPicked').textContent =
+				'Taruhan dipilih: ' +
+				(picked ? picked.label : stake + ' poin') +
+				'. Masih bisa diganti sebelum waktu habis.'
+		}
+
+		function onMessage(m) {
+			if (m.t === 'error') {
+				if (!joined) {
+					show('join')
+					showErr(m.message)
+				}
+			} else if (m.t === 'joined') {
+				joined = true
+				myPid = m.pid
+				localStorage.setItem('bb_pid', m.pid)
+				localStorage.setItem('bb_code', m.code)
+				localStorage.setItem('bb_name', m.name)
+				el('pScore').textContent = m.score
+				el('wName').textContent = m.name + (m.team ? ' - Tim ' + m.team : '')
+				if (m.phase === 'lobby' || m.phase === 'reveal') show('wait')
+			} else if (m.t === 'lobby') {
+				show('wait')
+			} else if (m.t === 'wager') {
+				wagerModeActive = true
+				current = null
+				lastTick = 0
+				show('wager')
+				currentWagerChoices = m.choices || []
+				el('wgPos').textContent = 'Kartu ' + (m.index + 1) + ' / ' + m.total
+				el('wgHintInfo').textContent =
+					m.hintLevel === 'clue' && m.clue
+						? 'Clue: ' + m.clue
+						: m.hintLevel === 'half'
+							? 'Bantuan 50:50 aktif - lihat 2 opsi yang tersisa di bawah.'
+							: 'Tanpa bantuan untuk soal ini. Pasang taruhanmu!'
+				el('wgChoices').innerHTML = renderWagerChoices(currentWagerChoices, null)
+				for (const b of el('wgChoices').children) {
+					b.onclick = () => sendWager(Number(b.dataset.stake))
+				}
+				if (m.hintLevel === 'half' && m.options) {
+					el('wgHalfOptions').classList.remove('hidden')
+					el('wgHalfOptions').innerHTML = optionButtonsHtml(m.options, {
+						tag: 'div',
+						selectable: false,
+					})
+					for (const idx of m.eliminated || []) {
+						const b = el('wgHalfOptions').children[idx]
+						if (b) b.classList.add('opt-eliminated')
+					}
+				} else {
+					el('wgHalfOptions').classList.add('hidden')
+					el('wgHalfOptions').innerHTML = ''
+				}
+				el('wgPicked').textContent =
+					'Belum memilih - kalau waktu habis, otomatis ' + m.defaultStake + ' poin.'
+
+				stopTimer?.()
+				stopTimer = startTimer(m.pickSeconds, {
+					onTick: (left, frac) => {
+						const t = el('wgTimer')
+						t.firstElementChild.style.width = frac * 100 + '%'
+						t.className =
+							'timer' + (frac < 0.2 ? ' danger' : frac < 0.5 ? ' warn' : '')
+						const s = Math.ceil(left)
+						if (s <= 5 && s > 0 && s !== lastTick) {
+							lastTick = s
+							sfxTick()
+						}
+					},
+				})
+			} else if (m.t === 'wagerAck') {
+				for (const c of el('wgChoices').children) {
+					c.classList.toggle('a', Number(c.dataset.stake) === m.stake)
+				}
+				const picked = currentWagerChoices.find((c) => c.stake === m.stake)
+				el('wgPicked').textContent =
+					'Taruhan tersimpan: ' +
+					(picked ? picked.label : m.stake + ' poin') +
+					'. Masih bisa diganti sebelum waktu habis.'
+			} else if (m.t === 'card') {
+				current = Object.assign({}, m, { locked: false })
+				lastTick = 0
+				show('game')
+				el('pFlip').classList.remove('is-flipped')
+				el('pType').textContent = m.typeLabel
+				el('pPos').textContent = m.index + 1 + ' / ' + m.total
+				el('pPrompt').textContent = m.prompt
+				el('pCode').innerHTML = highlight(m.code, m.lang)
+				el('pHint').textContent = wagerModeActive
+					? 'Poinmu tergantung taruhan yang sudah kamu pasang tadi.'
+					: 'Makin cepat menjawab, makin besar poinnya.'
+				el('pOpts').innerHTML = optionButtonsHtml(m.options, {
+					tag: 'button',
+					selectable: true,
+				})
+				for (const b of el('pOpts').children)
+					b.onclick = () => pick(Number(b.dataset.i))
+				if (m.eliminated && m.eliminated.length) {
+					for (const idx of m.eliminated) {
+						const b = el('pOpts').children[idx]
+						if (b) {
+							b.disabled = true
+							b.classList.add('opt-eliminated')
+						}
+					}
+				}
+
+				stopTimer?.()
+				stopTimer = startTimer(m.timeLimit, {
+					onTick: (left, frac) => {
+						const t = el('pTimer')
+						t.firstElementChild.style.width = frac * 100 + '%'
+						t.className =
+							'timer' + (frac < 0.2 ? ' danger' : frac < 0.5 ? ' warn' : '')
+						// Bunyi "tuk" sekali per detik di 5 detik terakhir -
+						// lastTick mencegah bunyi dobel karena onTick dipanggil
+						// tiap 100ms, bukan tiap detik.
+						const s = Math.ceil(left)
+						if (s <= 5 && s > 0 && s !== lastTick) {
+							lastTick = s
+							sfxTick()
+						}
+					},
+					onDone: () => {
+						if (current && !current.locked) {
+							current.locked = true
+							for (const b of el('pOpts').children) b.disabled = true
+							el('pHint').textContent = 'Waktu habis.'
+						}
+					},
+				})
+			} else if (m.t === 'ack') {
+				// Cuma konfirmasi pilihan mana yang tersimpan di server saat ini -
+				// TIDAK mengunci tombol, supaya siswa masih bisa ganti pilihan.
+				for (const b of el('pOpts').children) {
+					b.classList.toggle('is-picked', Number(b.dataset.i) === m.choice)
+				}
+			} else if (m.t === 'result') {
+				stopTimer?.()
+				if (current) current.locked = true
+				for (const b of el('pOpts').children) b.disabled = true
+				playResultSound(!!(m.answered && m.correct))
+				// Confetti kecil di HP sendiri kalau jawabannya benar - rasanya
+				// lebih personal daripada cuma lihat confetti di proyektor.
+				if (m.answered && m.correct) confettiBurst()
+				el('pFlip').classList.add('is-flipped')
+				el('pScore').textContent = m.score
+				if (current) {
+					el('pBackPrompt').textContent = current.prompt
+					el('pBackCode').innerHTML = highlight(current.code, current.lang)
+					el('pKey').textContent =
+						'Jawaban benar: ' +
+						LETTERS[m.answer] +
+						'. ' +
+						current.options[m.answer]
+					el('pWhy').textContent = m.explanation || ''
+				}
+				// wagerNoAnswerPenalty cuma terisi di mode taruhan, untuk peserta
+				// yang sudah pasang taruhan tapi tidak sempat/tidak menjawab sama
+				// sekali - dikenai penalti flat, bukan cuma "tidak dapat apa-apa".
+				const noAnswerPenalty = m.wagerNoAnswerPenalty
+				el('pMark').textContent = !m.answered
+					? '\u23F1'
+					: m.correct
+						? '\u2713'
+						: '\u2715'
+				el('pMark').style.color = !m.answered
+					? noAnswerPenalty
+						? 'var(--red)'
+						: 'var(--muted)'
+					: m.correct
+						? 'var(--green)'
+						: 'var(--red)'
+				el('pVerdict').textContent = !m.answered
+					? noAnswerPenalty
+						? 'Tidak menjawab (kena penalti)'
+						: 'Tidak sempat menjawab'
+					: m.correct
+						? 'Benar!'
+						: 'Belum tepat'
+				el('pPoints').textContent = (m.points >= 0 ? '+' : '') + m.points
+				if (m.answered && m.correct && m.breakdown) {
+					el('pBreakdown').classList.remove('hidden')
+					if (wagerModeActive && m.breakdown.stake !== undefined) {
+						el('pBreakdown').innerHTML =
+							'<div class="row between text-small"><span class="muted">Taruhan (benar)</span><strong>+' +
+							m.breakdown.stake +
+							'</strong></div>' +
+							(m.breakdown.streakBonus > 0
+								? '<div class="row between text-small"><span class="muted">Bonus beruntun</span><strong>+' +
+								m.breakdown.streakBonus +
+								'</strong></div>'
+								: '')
+					} else {
+						const secs = ((m.ms || 0) / 1000).toFixed(1)
+						el('pBreakdown').innerHTML =
+							'<div class="row between text-small"><span class="muted">Poin dasar (jawaban benar)</span><strong>+' +
+							m.breakdown.base +
+							'</strong></div>' +
+							'<div class="row between text-small"><span class="muted">Bonus cepat (jawab dlm ' +
+							secs +
+							' dtk)</span><strong>+' +
+							m.breakdown.speedBonus +
+							'</strong></div>' +
+							(m.breakdown.streakBonus > 0
+								? '<div class="row between text-small"><span class="muted">Bonus beruntun</span><strong>+' +
+								m.breakdown.streakBonus +
+								'</strong></div>'
+								: '')
+					}
+				} else if (!m.answered && noAnswerPenalty) {
+					el('pBreakdown').classList.remove('hidden')
+					el('pBreakdown').innerHTML =
+						'<div class="row between text-small"><span class="muted">Penalti tidak menjawab</span><strong>-' +
+						noAnswerPenalty +
+						'</strong></div>'
+				} else if (
+					wagerModeActive &&
+					m.answered &&
+					!m.correct &&
+					m.breakdown &&
+					m.breakdown.stake !== undefined
+				) {
+					el('pBreakdown').classList.remove('hidden')
+					el('pBreakdown').innerHTML =
+						'<div class="row between text-small"><span class="muted">Taruhan (salah)</span><strong>-' +
+						m.breakdown.stake +
+						'</strong></div>'
+				} else {
+					el('pBreakdown').classList.add('hidden')
+					el('pBreakdown').innerHTML = ''
+				}
+				el('pRank').textContent = 'Peringkat ' + (m.rank || '-') + ' dari ' + m.of
+				el('pStreak').textContent =
+					m.streak > 1 ? '🔥 ' + m.streak + ' benar beruntun' : 'Total ' + m.score
+			} else if (m.t === 'reveal') {
+					const questionNumber = m.index + 1
+					const interval = m.teamScoreInterval || 5
+					if (m.teams && (questionNumber % interval === 0 || m.isLast)) {
+						const me = m.leaderboard.find((p) => p.pid === myPid)
+						el('pTeams').innerHTML = teamsSummaryHtml(m.teams, {
+							highlightTeam: me ? me.team : null,
+						})
+					}
+			} else if (m.t === 'end') {
+				stopTimer?.()
+				show('end')
+				const me = m.leaderboard.find((p) => p.pid === myPid)
+				// Fanfare untuk semua, confetti besar khusus yang finis 3 besar.
+				sfxFanfare()
+				if (me && me.rank <= 3) confettiBurst(true)
+				el('eMine').innerHTML = me
+					? '<div class="text-center">' +
+					'<div class="label">Peringkat kamu' +
+					(me.team ? ' &middot; Tim ' + me.team : '') +
+					'</div>' +
+					'<div class="code-display code-display--compact">#' +
+					me.rank +
+					'</div>' +
+					'<div class="muted">' +
+					me.score +
+					' poin &middot; ' +
+					me.correct +
+					' dari ' +
+					m.total +
+					' benar</div></div>'
+					: ''
+				// Tim kamu + total skor tim - dulu tidak ditampilkan sama sekali
+				// di layar siswa, jadi siswa cuma lihat skor pribadi tanpa tahu
+				// timnya menang/kalah atau totalnya berapa.
+				el('eTeams').innerHTML = teamsSummaryHtml(m.teams, {
+					highlightTeam: me ? me.team : null,
+					final: true,
+				})
+				el('eBoard').innerHTML = leaderboardRowsHtml(m.leaderboard, {
+					highlightPid: myPid,
+					showTeam: !!m.teams,
 				})
 			}
+		}
+	</script>
+</body>
 
-			el('btnJoin').onclick = () => {
-				unlockAudio()
-				const code = el('fCode').value.trim().toUpperCase()
-				const name = el('fName').value.trim()
-				if (code.length !== 4 || !name) {
-					showErr('Isi kode room (4 huruf) dan nama kamu.')
-					return
-				}
-				if (localStorage.getItem('bb_code') !== code) myPid = null
-				doJoin()
-			}
-			el('fCode').addEventListener('keydown', (e) => {
-				if (e.key === 'Enter') el('fName').focus()
-			})
-			el('fName').addEventListener('keydown', (e) => {
-				if (e.key === 'Enter') el('btnJoin').click()
-			})
-
-			function showErr(msg) {
-				el('jErr').textContent = msg
-				el('jErr').classList.remove('hidden')
-			}
-
-			function show(which) {
-				for (const id of ['join', 'wait', 'wager', 'game', 'end'])
-					el(id).classList.toggle('hidden', id !== which)
-			}
-
-			function pick(i) {
-				// current.locked cuma jadi true kalau waktu habis atau jawaban
-				// sudah dibuka (lihat onDone timer & handler 'result') - selama
-				// belum itu, siswa bebas ganti pilihan berkali-kali.
-				if (!current || current.locked) return
-				// Opsi yang sudah dibuang oleh bantuan 50:50 (mode taruhan) tidak
-				// bisa dipilih - tombolnya juga sudah di-disable, ini jaga-jaga
-				// untuk jalur pintasan keyboard.
-				if (current.eliminated && current.eliminated.includes(i)) return
-				unlockAudio()
-				current.chosen = i
-				sock.send({ t: 'player:answer', choice: i })
-				for (const b of el('pOpts').children) {
-					b.classList.toggle('is-picked', Number(b.dataset.i) === i)
-				}
-				el('pHint').textContent =
-					'Jawaban tersimpan: ' + LETTERS[i] + '. Masih bisa diganti sebelum waktu habis.'
-			}
-
-			document.addEventListener('keydown', (e) => {
-				if (el('game').classList.contains('hidden') || !current) return
-				const k = e.key.toUpperCase()
-				const byLetter = LETTERS.indexOf(k)
-				const byNum = /^[1-9]$/.test(k) ? Number(k) - 1 : -1
-				const i = byLetter >= 0 ? byLetter : byNum
-				if (i >= 0 && i < current.options.length) pick(i)
-			})
-
-			// choices: array {stake, kind, label} dari server (lihat wagerChoicesFor
-			// di lib/game.js) - kind 'half'/'all_in' dapat kelas tambahan supaya
-			// tampilannya beda (lebih "berani") dari pilihan stake tetap.
-			function renderWagerChoices(choices, picked) {
-				return choices
-					.map(
-						(c) =>
-							'<button type="button" class="chip wager-chip' +
-							(c.kind === 'half'
-								? ' wager-chip-half'
-								: c.kind === 'all_in'
-									? ' wager-chip-allin'
-									: '') +
-							(c.stake === picked ? ' a' : '') +
-							'" data-stake="' +
-							c.stake +
-							'">' +
-							escapeHtml(c.label) +
-							'</button>',
-					)
-					.join('')
-			}
-
-			function sendWager(stake) {
-				unlockAudio()
-				sock.send({ t: 'player:wager', stake })
-				for (const c of el('wgChoices').children) {
-					c.classList.toggle('a', Number(c.dataset.stake) === stake)
-				}
-				const picked = currentWagerChoices.find((c) => c.stake === stake)
-				el('wgPicked').textContent =
-					'Taruhan dipilih: ' +
-					(picked ? picked.label : stake + ' poin') +
-					'. Masih bisa diganti sebelum waktu habis.'
-			}
-
-			function onMessage(m) {
-				if (m.t === 'error') {
-					if (!joined) {
-						show('join')
-						showErr(m.message)
-					}
-				} else if (m.t === 'joined') {
-					joined = true
-					myPid = m.pid
-					localStorage.setItem('bb_pid', m.pid)
-					localStorage.setItem('bb_code', m.code)
-					localStorage.setItem('bb_name', m.name)
-					el('pScore').textContent = m.score
-					el('wName').textContent = m.name + (m.team ? ' - Tim ' + m.team : '')
-					if (m.phase === 'lobby' || m.phase === 'reveal') show('wait')
-				} else if (m.t === 'lobby') {
-					show('wait')
-				} else if (m.t === 'wager') {
-					wagerModeActive = true
-					current = null
-					lastTick = 0
-					show('wager')
-					currentWagerChoices = m.choices || []
-					el('wgPos').textContent = 'Kartu ' + (m.index + 1) + ' / ' + m.total
-					el('wgHintInfo').textContent =
-						m.hintLevel === 'clue' && m.clue
-							? 'Clue: ' + m.clue
-							: m.hintLevel === 'half'
-								? 'Bantuan 50:50 aktif - lihat 2 opsi yang tersisa di bawah.'
-								: 'Tanpa bantuan untuk soal ini. Pasang taruhanmu!'
-					el('wgChoices').innerHTML = renderWagerChoices(currentWagerChoices, null)
-					for (const b of el('wgChoices').children) {
-						b.onclick = () => sendWager(Number(b.dataset.stake))
-					}
-					if (m.hintLevel === 'half' && m.options) {
-						el('wgHalfOptions').classList.remove('hidden')
-						el('wgHalfOptions').innerHTML = optionButtonsHtml(m.options, {
-							tag: 'div',
-							selectable: false,
-						})
-						for (const idx of m.eliminated || []) {
-							const b = el('wgHalfOptions').children[idx]
-							if (b) b.classList.add('opt-eliminated')
-						}
-					} else {
-						el('wgHalfOptions').classList.add('hidden')
-						el('wgHalfOptions').innerHTML = ''
-					}
-					el('wgPicked').textContent =
-						'Belum memilih - kalau waktu habis, otomatis ' + m.defaultStake + ' poin.'
-
-					stopTimer?.()
-					stopTimer = startTimer(m.pickSeconds, {
-						onTick: (left, frac) => {
-							const t = el('wgTimer')
-							t.firstElementChild.style.width = frac * 100 + '%'
-							t.className =
-								'timer' + (frac < 0.2 ? ' danger' : frac < 0.5 ? ' warn' : '')
-							const s = Math.ceil(left)
-							if (s <= 5 && s > 0 && s !== lastTick) {
-								lastTick = s
-								sfxTick()
-							}
-						},
-					})
-				} else if (m.t === 'wagerAck') {
-					for (const c of el('wgChoices').children) {
-						c.classList.toggle('a', Number(c.dataset.stake) === m.stake)
-					}
-					const picked = currentWagerChoices.find((c) => c.stake === m.stake)
-					el('wgPicked').textContent =
-						'Taruhan tersimpan: ' +
-						(picked ? picked.label : m.stake + ' poin') +
-						'. Masih bisa diganti sebelum waktu habis.'
-				} else if (m.t === 'card') {
-					current = Object.assign({}, m, { locked: false })
-					lastTick = 0
-					show('game')
-					el('pFlip').classList.remove('is-flipped')
-					el('pType').textContent = m.typeLabel
-					el('pPos').textContent = m.index + 1 + ' / ' + m.total
-					el('pPrompt').textContent = m.prompt
-					el('pCode').innerHTML = highlight(m.code, m.lang)
-					el('pHint').textContent = wagerModeActive
-						? 'Poinmu tergantung taruhan yang sudah kamu pasang tadi.'
-						: 'Makin cepat menjawab, makin besar poinnya.'
-					el('pOpts').innerHTML = optionButtonsHtml(m.options, {
-						tag: 'button',
-						selectable: true,
-					})
-					for (const b of el('pOpts').children)
-						b.onclick = () => pick(Number(b.dataset.i))
-					if (m.eliminated && m.eliminated.length) {
-						for (const idx of m.eliminated) {
-							const b = el('pOpts').children[idx]
-							if (b) {
-								b.disabled = true
-								b.classList.add('opt-eliminated')
-							}
-						}
-					}
-
-					stopTimer?.()
-					stopTimer = startTimer(m.timeLimit, {
-						onTick: (left, frac) => {
-							const t = el('pTimer')
-							t.firstElementChild.style.width = frac * 100 + '%'
-							t.className =
-								'timer' + (frac < 0.2 ? ' danger' : frac < 0.5 ? ' warn' : '')
-							// Bunyi "tuk" sekali per detik di 5 detik terakhir -
-							// lastTick mencegah bunyi dobel karena onTick dipanggil
-							// tiap 100ms, bukan tiap detik.
-							const s = Math.ceil(left)
-							if (s <= 5 && s > 0 && s !== lastTick) {
-								lastTick = s
-								sfxTick()
-							}
-						},
-						onDone: () => {
-							if (current && !current.locked) {
-								current.locked = true
-								for (const b of el('pOpts').children) b.disabled = true
-								el('pHint').textContent = 'Waktu habis.'
-							}
-						},
-					})
-				} else if (m.t === 'ack') {
-					// Cuma konfirmasi pilihan mana yang tersimpan di server saat ini -
-					// TIDAK mengunci tombol, supaya siswa masih bisa ganti pilihan.
-					for (const b of el('pOpts').children) {
-						b.classList.toggle('is-picked', Number(b.dataset.i) === m.choice)
-					}
-				} else if (m.t === 'result') {
-					stopTimer?.()
-					if (current) current.locked = true
-					for (const b of el('pOpts').children) b.disabled = true
-					playResultSound(!!(m.answered && m.correct))
-					// Confetti kecil di HP sendiri kalau jawabannya benar - rasanya
-					// lebih personal daripada cuma lihat confetti di proyektor.
-					if (m.answered && m.correct) confettiBurst()
-					el('pFlip').classList.add('is-flipped')
-					el('pScore').textContent = m.score
-					if (current) {
-						el('pBackPrompt').textContent = current.prompt
-						el('pBackCode').innerHTML = highlight(current.code, current.lang)
-						el('pKey').textContent =
-							'Jawaban benar: ' +
-							LETTERS[m.answer] +
-							'. ' +
-							current.options[m.answer]
-						el('pWhy').textContent = m.explanation || ''
-					}
-					// wagerNoAnswerPenalty cuma terisi di mode taruhan, untuk peserta
-					// yang sudah pasang taruhan tapi tidak sempat/tidak menjawab sama
-					// sekali - dikenai penalti flat, bukan cuma "tidak dapat apa-apa".
-					const noAnswerPenalty = m.wagerNoAnswerPenalty
-					el('pMark').textContent = !m.answered
-						? '\u23F1'
-						: m.correct
-							? '\u2713'
-							: '\u2715'
-					el('pMark').style.color = !m.answered
-						? noAnswerPenalty
-							? 'var(--red)'
-							: 'var(--muted)'
-						: m.correct
-							? 'var(--green)'
-							: 'var(--red)'
-					el('pVerdict').textContent = !m.answered
-						? noAnswerPenalty
-							? 'Tidak menjawab (kena penalti)'
-							: 'Tidak sempat menjawab'
-						: m.correct
-							? 'Benar!'
-							: 'Belum tepat'
-					el('pPoints').textContent = (m.points >= 0 ? '+' : '') + m.points
-					if (m.answered && m.correct && m.breakdown) {
-						el('pBreakdown').classList.remove('hidden')
-						if (wagerModeActive && m.breakdown.stake !== undefined) {
-							el('pBreakdown').innerHTML =
-								'<div class="row between text-small"><span class="muted">Taruhan (benar)</span><strong>+' +
-								m.breakdown.stake +
-								'</strong></div>' +
-								(m.breakdown.streakBonus > 0
-									? '<div class="row between text-small"><span class="muted">Bonus beruntun</span><strong>+' +
-										m.breakdown.streakBonus +
-										'</strong></div>'
-									: '')
-						} else {
-							const secs = ((m.ms || 0) / 1000).toFixed(1)
-							el('pBreakdown').innerHTML =
-								'<div class="row between text-small"><span class="muted">Poin dasar (jawaban benar)</span><strong>+' +
-								m.breakdown.base +
-								'</strong></div>' +
-								'<div class="row between text-small"><span class="muted">Bonus cepat (jawab dlm ' +
-								secs +
-								' dtk)</span><strong>+' +
-								m.breakdown.speedBonus +
-								'</strong></div>' +
-								(m.breakdown.streakBonus > 0
-									? '<div class="row between text-small"><span class="muted">Bonus beruntun</span><strong>+' +
-										m.breakdown.streakBonus +
-										'</strong></div>'
-									: '')
-						}
-					} else if (!m.answered && noAnswerPenalty) {
-						el('pBreakdown').classList.remove('hidden')
-						el('pBreakdown').innerHTML =
-							'<div class="row between text-small"><span class="muted">Penalti tidak menjawab</span><strong>-' +
-							noAnswerPenalty +
-							'</strong></div>'
-					} else if (
-						wagerModeActive &&
-						m.answered &&
-						!m.correct &&
-						m.breakdown &&
-						m.breakdown.stake !== undefined
-					) {
-						el('pBreakdown').classList.remove('hidden')
-						el('pBreakdown').innerHTML =
-							'<div class="row between text-small"><span class="muted">Taruhan (salah)</span><strong>-' +
-							m.breakdown.stake +
-							'</strong></div>'
-					} else {
-						el('pBreakdown').classList.add('hidden')
-						el('pBreakdown').innerHTML = ''
-					}
-					el('pRank').textContent = 'Peringkat ' + (m.rank || '-') + ' dari ' + m.of
-					el('pStreak').textContent =
-						m.streak > 1 ? '🔥 ' + m.streak + ' benar beruntun' : 'Total ' + m.score
-				} else if (m.t === 'end') {
-					stopTimer?.()
-					show('end')
-					const me = m.leaderboard.find((p) => p.pid === myPid)
-					// Fanfare untuk semua, confetti besar khusus yang finis 3 besar.
-					sfxFanfare()
-					if (me && me.rank <= 3) confettiBurst(true)
-					el('eMine').innerHTML = me
-						? '<div class="text-center">' +
-							'<div class="label">Peringkat kamu' +
-							(me.team ? ' &middot; Tim ' + me.team : '') +
-							'</div>' +
-							'<div class="code-display code-display--compact">#' +
-							me.rank +
-							'</div>' +
-							'<div class="muted">' +
-							me.score +
-							' poin &middot; ' +
-							me.correct +
-							' dari ' +
-							m.total +
-							' benar</div></div>'
-						: ''
-					// Tim kamu + total skor tim - dulu tidak ditampilkan sama sekali
-					// di layar siswa, jadi siswa cuma lihat skor pribadi tanpa tahu
-					// timnya menang/kalah atau totalnya berapa.
-					el('eTeams').innerHTML = teamsSummaryHtml(m.teams, {
-						highlightTeam: me ? me.team : null,
-						final: true,
-					})
-					el('eBoard').innerHTML = leaderboardRowsHtml(m.leaderboard, {
-						highlightPid: myPid,
-						showTeam: !!m.teams,
-					})
-				}
-			}
-		</script>
-	</body>
 </html>

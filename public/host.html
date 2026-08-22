@@ -65,6 +65,14 @@
 									<option value="6">6 tim</option>
 								</select>
 							</div>
+							<div>
+								<span class="label">Tampilkan skor tim setiap</span>
+								<select class="input" id="optTeamScoreInterval">
+									<option value="3">3 soal</option>
+									<option value="5" selected>5 soal</option>
+									<option value="7">7 soal</option>
+								</select>
+							</div>
 							<button class="btn btn-block" id="btnShuffleTeams" type="button">
 								Kocok ulang tim
 							</button>
@@ -284,6 +292,7 @@
 					bank: el('optBank').value,
 					teamMode: el('optTeam').checked,
 					teamCount: Number(el('optTeamCount').value) || 2,
+					teamScoreInterval: Number(el('optTeamScoreInterval').value) || 5,
 					shuffle: el('optShuffle').checked,
 					count: Number(el('optCount').value) || 10,
 					types: [...picked],
@@ -298,6 +307,7 @@
 				'optBank',
 				'optTeam',
 				'optTeamCount',
+				'optTeamScoreInterval',
 				'optShuffle',
 				'optCount',
 				'optWager',
@@ -426,6 +436,7 @@
 					el('optCount').max = m.available
 					el('optTeam').checked = !!m.options.teamMode
 					el('optTeamCount').value = m.options.teamCount || 2
+					el('optTeamScoreInterval').value = m.options.teamScoreInterval || 5
 					el('teamModeExtra').classList.toggle('hidden', !m.options.teamMode)
 					el('optWager').checked = !!m.options.wagerMode
 					el('hintPanel').classList.toggle('hidden', !m.options.wagerMode)
