@@ -1,617 +1,664 @@
 <!doctype html>
 <html lang="id">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Layar Guru - Branch Battle</title>
-		<link rel="stylesheet" href="/css/app.css" />
-	</head>
-	<body>
-		<div class="wrap">
-			<div class="row between mb-8">
-				<div class="row gap-4">
-					<strong class="card-title">Branch Battle</strong>
-					<span class="pill">Layar guru</span>
-				</div>
-				<div class="row gap-3">
-					<span class="dot" id="dot"></span>
-					<span class="muted text-small" id="status">menyambung...</span>
-				</div>
-			</div>
 
-			<!-- Panel bantuan mode taruhan (v2) - cuma tampil kalau Mode Taruhan
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Layar Guru - Branch Battle</title>
+	<link rel="stylesheet" href="/css/app.css" />
+</head>
+
+<body>
+	<div class="wrap">
+		<div class="row between mb-8">
+			<div class="row gap-4">
+				<strong class="card-title">Branch Battle</strong>
+				<span class="pill">Layar guru</span>
+			</div>
+			<div class="row gap-3">
+				<span class="dot" id="dot"></span>
+				<span class="muted text-small" id="status">menyambung...</span>
+			</div>
+		</div>
+
+		<!-- Panel bantuan mode taruhan (v2) - cuma tampil kalau Mode Taruhan
 			     dinyalakan. Host pilih bantuan di sini SEBELUM menekan "Mulai
 			     kuis" atau "Kartu berikutnya", jadi berlaku untuk kartu
 			     berikutnya yang akan tampil. -->
-			<div class="card stack hidden" id="hintPanel">
-				<span class="label m-0">Bantuan untuk kartu berikutnya (mode taruhan)</span>
-				<select class="input" id="gHint">
-					<option value="none">Tanpa bantuan</option>
-					<option value="clue">Kasih clue</option>
-					<option value="half">50:50 (buang 2 opsi salah)</option>
-				</select>
-			</div>
+		<div class="card stack hidden" id="hintPanel">
+			<span class="label m-0">Bantuan untuk kartu berikutnya (mode taruhan)</span>
+			<select class="input" id="gHint">
+				<option value="none">Tanpa bantuan</option>
+				<option value="clue">Kasih clue</option>
+				<option value="half">50:50 (buang 2 opsi salah)</option>
+			</select>
+		</div>
 
-			<!-- ============================ LOBBY ============================ -->
-			<section id="lobby" class="lobby-grid">
-				<div class="stack">
-					<div class="card stack">
-						<span class="label m-0">Kode room</span>
-						<div class="code-display" id="code">....</div>
-						<div class="stack gap-2">
-							<span class="label m-0">Buka di HP siswa (satu WiFi)</span>
-							<div id="urls" class="stack gap-2"></div>
-						</div>
-					</div>
-
-					<div class="card stack">
-						<h2 class="card-title">Pengaturan</h2>
-						<div>
-							<span class="label">Bank soal</span>
-							<select class="input" id="optBank"></select>
-						</div>
-						<label class="toggle">
-							<input type="checkbox" id="optTeam" />
-							<span>Mode tim (bagi peserta ke beberapa tim)</span>
-						</label>
-						<div id="teamModeExtra" class="stack gap-3 hidden">
-							<div>
-								<span class="label">Jumlah tim</span>
-								<select class="input" id="optTeamCount">
-									<option value="2">2 tim</option>
-									<option value="3">3 tim</option>
-									<option value="4">4 tim</option>
-									<option value="5">5 tim</option>
-									<option value="6">6 tim</option>
-								</select>
-							</div>
-							<div>
-								<span class="label">Tampilkan skor tim setiap</span>
-								<select class="input" id="optTeamScoreInterval">
-									<option value="3">3 soal</option>
-									<option value="5" selected>5 soal</option>
-									<option value="7">7 soal</option>
-								</select>
-							</div>
-							<button class="btn btn-block" id="btnShuffleTeams" type="button">
-								Kocok ulang tim
-							</button>
-							<p class="muted text-small m-0">
-								Atur tim tiap siswa langsung di daftar Peserta di samping.
-							</p>
-						</div>
-						<label class="toggle">
-							<input type="checkbox" id="optWager" />
-							<span>Mode taruhan (peserta pasang poin sebelum soal muncul)</span>
-						</label>
-						<p class="muted text-small m-0">
-							Mode baru, tidak menggantikan mode biasa. Bisa dipakai bersamaan
-							dengan mode tim.
-						</p>
-						<label class="toggle">
-							<input type="checkbox" id="optShuffle" checked />
-							<span>Acak urutan soal</span>
-						</label>
-						<div>
-							<span class="label">Jumlah soal</span>
-							<input
-								class="input"
-								id="optCount"
-								type="number"
-								min="1"
-								value="10"
-							/>
-						</div>
-						<div>
-							<span class="label">Jenis kartu (pilih minimal satu)</span>
-							<div class="chips" id="typeChips"></div>
-						</div>
-						<button class="btn btn-primary btn-block" id="start" disabled>
-							Mulai kuis
-						</button>
+		<!-- ============================ LOBBY ============================ -->
+		<section id="lobby" class="lobby-grid">
+			<div class="stack">
+				<div class="card stack">
+					<span class="label m-0">Kode room</span>
+					<div class="code-display" id="code">....</div>
+					<div class="stack gap-2">
+						<span class="label m-0">Buka di HP siswa (satu WiFi)</span>
+						<div id="urls" class="stack gap-2"></div>
 					</div>
 				</div>
 
 				<div class="card stack">
-					<div class="row between">
-						<h2 class="card-title">Peserta</h2>
-						<span class="pill pill-blue" id="count">0</span>
+					<h2 class="card-title">Pengaturan</h2>
+					<div>
+						<span class="label">Bank soal</span>
+						<select class="input" id="optBank"></select>
 					</div>
-					<div class="lb" id="roster">
-						<p class="muted m-0 text-small">Menunggu siswa bergabung...</p>
+					<label class="toggle">
+						<input type="checkbox" id="optTeam" />
+						<span>Mode tim (bagi peserta ke beberapa tim)</span>
+					</label>
+					<div id="teamModeExtra" class="stack gap-3 hidden">
+						<div>
+							<span class="label">Jumlah tim</span>
+							<select class="input" id="optTeamCount">
+								<option value="2">2 tim</option>
+								<option value="3">3 tim</option>
+								<option value="4">4 tim</option>
+								<option value="5">5 tim</option>
+								<option value="6">6 tim</option>
+							</select>
+						</div>
+						<div>
+							<span class="label">Tampilkan skor tim setiap</span>
+							<select class="input" id="optTeamScoreInterval">
+								<option value="3">3 soal</option>
+								<option value="5" selected>5 soal</option>
+								<option value="7">7 soal</option>
+							</select>
+						</div>
+						<button class="btn btn-block" id="btnShuffleTeams" type="button">
+							Kocok ulang tim
+						</button>
+						<p class="muted text-small m-0">
+							Atur tim tiap siswa langsung di daftar Peserta di samping.
+						</p>
 					</div>
+					<label class="toggle">
+						<input type="checkbox" id="optWager" />
+						<span>Mode taruhan (peserta pasang poin sebelum soal muncul)</span>
+					</label>
+					<p class="muted text-small m-0">
+						Mode baru, tidak menggantikan mode biasa. Bisa dipakai bersamaan
+						dengan mode tim.
+					</p>
+					<label class="toggle">
+						<input type="checkbox" id="optShuffle" checked />
+						<span>Acak urutan soal</span>
+					</label>
+					<div>
+						<span class="label">Jumlah soal</span>
+						<input class="input" id="optCount" type="number" min="1" value="10" />
+					</div>
+					<div>
+						<span class="label">Jenis kartu (pilih minimal satu)</span>
+						<div class="chips" id="typeChips"></div>
+					</div>
+					<button class="btn btn-primary btn-block" id="start" disabled>
+						Mulai kuis
+					</button>
 				</div>
-			</section>
+			</div>
 
-			<!-- ============================ GAME ============================= -->
-			<section id="game" class="hidden">
-				<div class="row between mb-6">
-					<div class="row gap-3">
-						<span class="pill pill-orange" id="gType">-</span>
-						<span class="pill" id="gPos">-</span>
-					</div>
-					<span class="pill pill-green" id="gAnswered">0 dari 0 menjawab</span>
+			<div class="card stack">
+				<div class="row between">
+					<h2 class="card-title">Peserta</h2>
+					<span class="pill pill-blue" id="count">0</span>
 				</div>
-				<div class="timer mb-7" id="gTimer"><i></i></div>
+				<div class="lb" id="roster">
+					<p class="muted m-0 text-small">Menunggu siswa bergabung...</p>
+				</div>
+			</div>
+		</section>
 
-				<!-- Ditampilkan selama fase 'wager' (mode taruhan) - host TIDAK
+		<!-- ============================ GAME ============================= -->
+		<section id="game" class="hidden">
+			<div class="row between mb-6">
+				<div class="row gap-3">
+					<span class="pill pill-orange" id="gType">-</span>
+					<span class="pill" id="gPos">-</span>
+				</div>
+				<span class="pill pill-green" id="gAnswered">0 dari 0 menjawab</span>
+			</div>
+			<div class="timer mb-7" id="gTimer"><i></i></div>
+
+			<!-- Ditampilkan selama fase 'wager' (mode taruhan) - host TIDAK
 				     melihat soal/kode di sini, sama seperti peserta, supaya taruhan
 				     tetap blind walau layar guru diproyeksikan ke kelas. -->
-				<div id="gWagerWait" class="card stack hidden">
-					<h2 class="card-title">Peserta sedang memasang taruhan...</h2>
-					<p class="muted m-0" id="gWagerHintInfo">-</p>
-				</div>
+			<div id="gWagerWait" class="card stack hidden">
+				<h2 class="card-title">Peserta sedang memasang taruhan...</h2>
+				<p class="muted m-0" id="gWagerHintInfo">-</p>
+			</div>
 
-				<div id="gameGrid" class="game-grid">
-					<div class="flip" id="gFlip">
-						<div class="flip-inner" id="gInner">
-							<div class="flip-face stack" id="gFront">
-								<h2 id="gPrompt" class="text-2xl">-</h2>
-								<pre class="codebox" id="gCode"></pre>
-								<div class="opts" id="gOpts"></div>
-							</div>
-							<div class="flip-face flip-back stack" id="gBack">
-								<span class="pill pill-green">Jawaban</span>
-								<div id="gBackGrid" class="reveal-grid">
-									<div class="stack gap-4">
-										<span class="label m-0">Soal tadi</span>
-										<h3 id="gBackPrompt" class="font-semibold">-</h3>
-										<pre class="codebox codebox-compact" id="gBackCode"></pre>
-									</div>
-									<div class="stack gap-5">
-										<h2 id="gAnswer" class="text-2xl">-</h2>
-										<p id="gWhy" class="muted m-0">-</p>
-										<div id="gFastest" class="stack gap-1"></div>
-										<div class="stack gap-3" id="gStats"></div>
-									</div>
+			<div id="gameGrid" class="game-grid">
+				<div class="flip" id="gFlip">
+					<div class="flip-inner" id="gInner">
+						<div class="flip-face stack" id="gFront">
+							<h2 id="gPrompt" class="text-2xl">-</h2>
+							<pre class="codebox" id="gCode"></pre>
+							<div class="opts" id="gOpts"></div>
+						</div>
+						<div class="flip-face flip-back stack" id="gBack">
+							<span class="pill pill-green">Jawaban</span>
+							<div id="gBackGrid" class="reveal-grid">
+								<div class="stack gap-4">
+									<span class="label m-0">Soal tadi</span>
+									<h3 id="gBackPrompt" class="font-semibold">-</h3>
+									<pre class="codebox codebox-compact" id="gBackCode"></pre>
+								</div>
+								<div class="stack gap-5">
+									<h2 id="gAnswer" class="text-2xl">-</h2>
+									<p id="gWhy" class="muted m-0">-</p>
+									<!-- Pengumuman ON FIRE (v2.3) - diisi saat ada peserta
+										     yang streak-nya mencapai milestone di kartu ini. -->
+									<div id="gFire" class="stack gap-2"></div>
+									<div id="gFastest" class="stack gap-1"></div>
+									<div class="stack gap-3" id="gStats"></div>
+									<!-- Panel miskonsepsi (v2.3) - opsi SALAH terpopuler,
+										     bahan host untuk langsung membahas di kelas. -->
+									<div id="gMisconception"></div>
 								</div>
 							</div>
 						</div>
 					</div>
-
-					<div class="stack">
-						<div id="gTeams"></div>
-						<div class="card stack">
-							<h2 class="card-title">Papan skor</h2>
-							<div class="lb" id="gBoard"></div>
-						</div>
-						<button class="btn btn-primary btn-block" id="btnReveal">
-							<span>Buka jawaban</span>
-							<span class="muted">(Spasi)</span>
-						</button>
-						<button class="btn btn-block hidden" id="btnNext">
-							<span id="btnNextLabel">Kartu berikutnya</span>
-							<span class="muted">(Enter)</span>
-						</button>
-					</div>
 				</div>
-			</section>
 
-			<!-- ============================= END ============================== -->
-			<section id="end" class="hidden">
-				<div class="stack max-w-sm mx-auto">
-					<div class="stack gap-2 text-center">
-						<span class="pill pill-green mx-auto">Selesai</span>
-						<h1 class="page-title">Hasil akhir</h1>
+				<div class="stack">
+					<div id="gTeams"></div>
+					<div class="card stack">
+						<h2 class="card-title">Papan skor</h2>
+						<div class="lb" id="gBoard"></div>
 					</div>
-					<div id="eTeams"></div>
-					<div class="card">
-						<div class="lb" id="eBoard"></div>
-					</div>
-					<button class="btn btn-primary btn-block" id="btnAgain">
-						Main lagi (skor direset)
+					<button class="btn btn-primary btn-block" id="btnReveal">
+						<span>Buka jawaban</span>
+						<span class="muted">(Spasi)</span>
+					</button>
+					<button class="btn btn-block hidden" id="btnNext">
+						<span id="btnNextLabel">Kartu berikutnya</span>
+						<span class="muted">(Enter)</span>
 					</button>
 				</div>
-			</section>
-		</div>
+			</div>
+		</section>
 
-		<script type="module">
-			import {
-				connect,
-				el,
-				highlight,
-				escapeHtml,
-				LETTERS,
-				startTimer,
-				optionButtonsHtml,
-				leaderboardRowsHtml,
-				teamsSummaryHtml,
-				unlockSfx,
-				sfxTick,
-				sfxReveal,
-				sfxFanfare,
-				confettiBurst,
-			} from '/js/common.js'
+		<!-- ============================= END ============================== -->
+		<section id="end" class="hidden">
+			<div class="stack max-w-sm mx-auto">
+				<div class="stack gap-2 text-center">
+					<span class="pill pill-green mx-auto">Selesai</span>
+					<h1 class="page-title">Hasil akhir</h1>
+				</div>
+				<div id="eTeams"></div>
+				<div class="card">
+					<div class="lb" id="eBoard"></div>
+				</div>
+				<button class="btn btn-primary btn-block" id="btnAgain">
+					Main lagi (skor direset)
+				</button>
+			</div>
+		</section>
+	</div>
 
-			// Catatan refactor: dulu ada mq/COLS/applyStack (window.matchMedia) untuk
-			// mengganti grid-template-columns lewat JS, dan fitCard()/ResizeObserver
-			// untuk menyamakan tinggi kartu depan-belakang. Semuanya dihapus - grid
-			// responsif dan tinggi kartu sekarang murni CSS (lihat .game-grid,
-			// .reveal-grid, dan .flip-inner di app.css). Ini juga yang memperbaiki
-			// keluhan "blok kode di jawaban kepotong/ketinggian di HP": fitCard()
-			// lama sempat mengukur tinggi SAAT animasi rotateY 600ms masih berjalan,
-			// jadi hasil ukurannya salah.
+	<script type="module">
+		import {
+			connect,
+			el,
+			highlight,
+			escapeHtml,
+			LETTERS,
+			startTimer,
+			optionButtonsHtml,
+			leaderboardRowsHtml,
+			teamsSummaryHtml,
+			unlockSfx,
+			sfxTick,
+			sfxReveal,
+			sfxFanfare,
+			confettiBurst,
+		} from '/js/common.js'
 
-			let stopTimer = null
-			let current = null
-			let lastTick = 0
-			// 'wager' selama fase pasang taruhan, 'question' selama fase soal -
-			// dipakai cuma untuk memilih label yang tepat di pill #gAnswered.
-			let phaseForProgress = 'question'
+		// Catatan refactor: dulu ada mq/COLS/applyStack (window.matchMedia) untuk
+		// mengganti grid-template-columns lewat JS, dan fitCard()/ResizeObserver
+		// untuk menyamakan tinggi kartu depan-belakang. Semuanya dihapus - grid
+		// responsif dan tinggi kartu sekarang murni CSS (lihat .game-grid,
+		// .reveal-grid, dan .flip-inner di app.css). Ini juga yang memperbaiki
+		// keluhan "blok kode di jawaban kepotong/ketinggian di HP": fitCard()
+		// lama sempat mengukur tinggi SAAT animasi rotateY 600ms masih berjalan,
+		// jadi hasil ukurannya salah.
 
-			// AudioContext browser baru boleh berbunyi setelah ada gesture pengguna
-			// (kebijakan autoplay) - unlock sekali di interaksi pertama. Guru hampir
-			// pasti mengklik/menekan tombol sebelum kuis mulai, jadi aman.
-			document.addEventListener('pointerdown', unlockSfx, { once: true })
-			document.addEventListener('keydown', unlockSfx, { once: true })
+		let stopTimer = null
+		let current = null
+		let lastTick = 0
+		// 'wager' selama fase pasang taruhan, 'question' selama fase soal -
+		// dipakai cuma untuk memilih label yang tepat di pill #gAnswered.
+		let phaseForProgress = 'question'
 
-			const TYPES = [
-				['predict-output', 'Tebak Output'],
-				['trace-path', 'Telusuri Cabang'],
-				['fix-bug', 'Cari Bug'],
-				['pairing', 'Pasangkan'],
-			]
-			const picked = new Set(TYPES.map((t) => t[0]))
+		// AudioContext browser baru boleh berbunyi setelah ada gesture pengguna
+		// (kebijakan autoplay) - unlock sekali di interaksi pertama. Guru hampir
+		// pasti mengklik/menekan tombol sebelum kuis mulai, jadi aman.
+		document.addEventListener('pointerdown', unlockSfx, { once: true })
+		document.addEventListener('keydown', unlockSfx, { once: true })
 
-			el('typeChips').innerHTML = TYPES.map(
-				([id, label]) =>
-					'<button class="chip a" data-type="' + id + '">' + label + '</button>',
-			).join('')
+		const TYPES = [
+			['predict-output', 'Tebak Output'],
+			['trace-path', 'Telusuri Cabang'],
+			['fix-bug', 'Cari Bug'],
+			['pairing', 'Pasangkan'],
+		]
+		const picked = new Set(TYPES.map((t) => t[0]))
 
-			el('typeChips').addEventListener('click', (e) => {
-				const b = e.target.closest('[data-type]')
-				if (!b) return
-				const id = b.dataset.type
-				if (picked.has(id) && picked.size > 1) picked.delete(id)
-				else picked.add(id)
-				b.classList.toggle('a', picked.has(id))
-				pushOptions()
-			})
+		el('typeChips').innerHTML = TYPES.map(
+			([id, label]) =>
+				'<button class="chip a" data-type="' + id + '">' + label + '</button>',
+		).join('')
 
-			const sock = connect({
-				onMessage: onMessage,
-				onStatus: (s) => {
-					el('dot').className =
-						'dot ' + (s === 'online' ? 'on' : s === 'offline' ? 'off' : '')
-					el('status').textContent =
-						s === 'online'
-							? 'tersambung'
-							: s === 'offline'
-								? 'terputus - menyambung ulang'
-								: 'menyambung...'
-					if (s === 'online') {
-						const saved = sessionStorage.getItem('bb_host_code')
-						if (saved) sock.send({ t: 'host:resume', code: saved })
-						else sock.send({ t: 'host:create', options: readOptions() })
-					}
-				},
-			})
+		el('typeChips').addEventListener('click', (e) => {
+			const b = e.target.closest('[data-type]')
+			if (!b) return
+			const id = b.dataset.type
+			if (picked.has(id) && picked.size > 1) picked.delete(id)
+			else picked.add(id)
+			b.classList.toggle('a', picked.has(id))
+			pushOptions()
+		})
 
-			function readOptions() {
-				return {
-					bank: el('optBank').value,
-					teamMode: el('optTeam').checked,
-					teamCount: Number(el('optTeamCount').value) || 2,
-					teamScoreInterval: Number(el('optTeamScoreInterval').value) || 5,
-					shuffle: el('optShuffle').checked,
-					count: Number(el('optCount').value) || 10,
-					types: [...picked],
-					wagerMode: el('optWager').checked,
+		const sock = connect({
+			onMessage: onMessage,
+			onStatus: (s) => {
+				el('dot').className =
+					'dot ' + (s === 'online' ? 'on' : s === 'offline' ? 'off' : '')
+				el('status').textContent =
+					s === 'online'
+						? 'tersambung'
+						: s === 'offline'
+							? 'terputus - menyambung ulang'
+							: 'menyambung...'
+				if (s === 'online') {
+					const saved = sessionStorage.getItem('bb_host_code')
+					if (saved) sock.send({ t: 'host:resume', code: saved })
+					else sock.send({ t: 'host:create', options: readOptions() })
 				}
+			},
+		})
+
+		function readOptions() {
+			return {
+				bank: el('optBank').value,
+				teamMode: el('optTeam').checked,
+				teamCount: Number(el('optTeamCount').value) || 2,
+				teamScoreInterval: Number(el('optTeamScoreInterval').value) || 5,
+				shuffle: el('optShuffle').checked,
+				count: Number(el('optCount').value) || 10,
+				types: [...picked],
+				wagerMode: el('optWager').checked,
 			}
-			function pushOptions() {
-				sock.send({ t: 'host:options', options: readOptions() })
-			}
+		}
+		function pushOptions() {
+			sock.send({ t: 'host:options', options: readOptions() })
+		}
 
-			for (const id of [
-				'optBank',
-				'optTeam',
-				'optTeamCount',
-				'optTeamScoreInterval',
-				'optShuffle',
-				'optCount',
-				'optWager',
-			])
-				el(id).addEventListener('change', pushOptions)
+		for (const id of [
+			'optBank',
+			'optTeam',
+			'optTeamCount',
+			'optTeamScoreInterval',
+			'optShuffle',
+			'optCount',
+			'optWager',
+		])
+			el(id).addEventListener('change', pushOptions)
 
-			// Tampilkan/sembunyikan panel "Jumlah tim" + tombol kocok ulang cuma
-			// saat mode tim menyala - dulu opsi ini tidak ada sama sekali.
-			el('optTeam').addEventListener('change', () => {
-				el('teamModeExtra').classList.toggle('hidden', !el('optTeam').checked)
-			})
+		// Tampilkan/sembunyikan panel "Jumlah tim" + tombol kocok ulang cuma
+		// saat mode tim menyala - dulu opsi ini tidak ada sama sekali.
+		el('optTeam').addEventListener('change', () => {
+			el('teamModeExtra').classList.toggle('hidden', !el('optTeam').checked)
+		})
 
-			// Panel pilihan bantuan (clue / 50:50) cuma relevan kalau mode taruhan
-			// menyala - mode baru ini tidak menggantikan mode biasa.
-			el('optWager').addEventListener('change', () => {
-				el('hintPanel').classList.toggle('hidden', !el('optWager').checked)
-			})
+		// Panel pilihan bantuan (clue / 50:50) cuma relevan kalau mode taruhan
+		// menyala - mode baru ini tidak menggantikan mode biasa.
+		el('optWager').addEventListener('change', () => {
+			hintPanelVisibility()
+		})
 
-			el('btnShuffleTeams').addEventListener('click', () => {
-				sock.send({ t: 'host:shuffleTeams' })
-			})
+		function hintPanelVisibility() {
+			el('hintPanel').classList.toggle('hidden', !el('optWager').checked)
+		}
 
-			// Delegasi: dropdown tim per siswa ada di dalam #roster, dibuat ulang
-			// tiap kali roster berubah - jadi listener-nya dipasang sekali di sini
-			// pada elemen induknya, bukan per-<select>.
-			el('roster').addEventListener('change', (e) => {
-				const sel = e.target.closest('.team-select')
-				if (!sel) return
-				sock.send({ t: 'host:setTeam', pid: sel.dataset.pid, team: sel.value })
-			})
+		el('btnShuffleTeams').addEventListener('click', () => {
+			sock.send({ t: 'host:shuffleTeams' })
+		})
 
-			function renderRoster(m) {
-				el('count').textContent = m.players.length
-				el('start').disabled = m.players.length === 0
-				if (m.teamMode && m.teams) {
-					const letters = Object.keys(m.teams)
-					el('roster').innerHTML = m.players.length
-						? m.players
-								.map((p) => {
-									const opts = letters
-										.map(
-											(l) =>
-												'<option value="' +
-												l +
-												'"' +
-												(p.team === l ? ' selected' : '') +
-												'>Tim ' +
-												l +
-												'</option>',
-										)
-										.join('')
-									return (
-										'<div class="lb-row roster-row' +
-										(p.online === false ? ' off' : '') +
-										'"><span class="lb-rank">' +
-										p.rank +
-										'</span><span class="lb-name">' +
-										escapeHtml(p.name) +
-										(p.streak >= 3 ? ' 🔥' : '') +
-										(p.online === false
-											? ' <span class="muted">(offline)</span>'
-											: '') +
-										'</span><select class="input team-select" data-pid="' +
-										p.pid +
-										'">' +
-										opts +
-										'</select><span class="lb-score">' +
-										p.score +
-										'</span></div>'
-									)
-								})
-								.join('')
-						: '<p class="muted m-0 text-small">Menunggu siswa bergabung...</p>'
-				} else {
-					el('roster').innerHTML = leaderboardRowsHtml(m.players, { showTeam: false })
-				}
-			}
+		// Delegasi: dropdown tim per siswa ada di dalam #roster, dibuat ulang
+		// tiap kali roster berubah - jadi listener-nya dipasang sekali di sini
+		// pada elemen induknya, bukan per-<select>.
+		el('roster').addEventListener('change', (e) => {
+			const sel = e.target.closest('.team-select')
+			if (!sel) return
+			sock.send({ t: 'host:setTeam', pid: sel.dataset.pid, team: sel.value })
+		})
 
-			el('start').onclick = () => {
-				pushOptions()
-				sock.send({ t: 'host:start', hint: el('gHint').value })
-			}
-			el('btnReveal').onclick = () => sock.send({ t: 'host:reveal' })
-			el('btnNext').onclick = () => sock.send({ t: 'host:next', hint: el('gHint').value })
-			el('btnAgain').onclick = () => sock.send({ t: 'host:restart' })
-
-			document.addEventListener('keydown', (e) => {
-				if (el('game').classList.contains('hidden')) return
-				if (e.code === 'Space') {
-					e.preventDefault()
-					if (!el('btnReveal').classList.contains('hidden')) el('btnReveal').click()
-				} else if (e.code === 'Enter') {
-					e.preventDefault()
-					if (!el('btnNext').classList.contains('hidden')) el('btnNext').click()
-				}
-			})
-
-			function show(which) {
-				for (const id of ['lobby', 'game', 'end'])
-					el(id).classList.toggle('hidden', id !== which)
-			}
-
-			function renderTeams(node, teams, opts) {
-				node.innerHTML = teamsSummaryHtml(teams, opts)
-			}
-
-			function onMessage(m) {
-				if (m.t === 'room') {
-					sessionStorage.setItem('bb_host_code', m.code)
-					el('code').textContent = m.code
-					if (m.banks) {
-						el('optBank').innerHTML = m.banks
-							.map(
-								(b) =>
-									'<option value="' +
-									escapeHtml(b.id) +
-									'">' +
-									escapeHtml(b.label) +
-									' (' +
-									b.count +
-									' soal)</option>',
-							)
-							.join('')
-					}
-					el('optBank').value = m.options.bank
-					el('optCount').max = m.available
-					el('optTeam').checked = !!m.options.teamMode
-					el('optTeamCount').value = m.options.teamCount || 2
-					el('optTeamScoreInterval').value = m.options.teamScoreInterval || 5
-					el('teamModeExtra').classList.toggle('hidden', !m.options.teamMode)
-					el('optWager').checked = !!m.options.wagerMode
-					el('hintPanel').classList.toggle('hidden', !m.options.wagerMode)
-					el('urls').innerHTML = m.joinUrls.length
-						? m.joinUrls
+		function renderRoster(m) {
+			el('count').textContent = m.players.length
+			el('start').disabled = m.players.length === 0
+			if (m.teamMode && m.teams) {
+				const letters = Object.keys(m.teams)
+				el('roster').innerHTML = m.players.length
+					? m.players
+						.map((p) => {
+							const opts = letters
 								.map(
-									(u) =>
-										'<code class="join-url">http://' + escapeHtml(u) + '</code>',
+									(l) =>
+										'<option value="' +
+										l +
+										'"' +
+										(p.team === l ? ' selected' : '') +
+										'>Tim ' +
+										l +
+										'</option>',
 								)
 								.join('')
-						: '<span class="muted text-small">Alamat LAN tidak terdeteksi.</span>'
-				} else if (m.t === 'error') {
-					sessionStorage.removeItem('bb_host_code')
-					sock.send({ t: 'host:create', options: readOptions() })
-				} else if (m.t === 'roster') {
-					renderRoster(m)
-					el('gBoard').innerHTML = leaderboardRowsHtml(m.players.slice(0, 8), {
-						showTeam: true,
-					})
-					if (m.phase === 'lobby') show('lobby')
-				} else if (m.t === 'lobby') {
-					show('lobby')
-				} else if (m.t === 'wager') {
-					// Fase pasang taruhan (mode taruhan) - host TIDAK melihat soal di
-					// sini, cuma info bantuan yang berlaku dan progres pemasangan.
-					phaseForProgress = 'wager'
-					lastTick = 0
-					show('game')
-					el('gWagerWait').classList.remove('hidden')
-					el('gameGrid').classList.add('hidden')
-					el('gType').textContent = 'Pasang Taruhan'
-					el('gPos').textContent = 'Kartu ' + (m.index + 1) + ' / ' + m.total
-					el('gWagerHintInfo').textContent =
-						m.hintLevel === 'clue' && m.clue
-							? 'Clue untuk peserta: ' + m.clue
-							: m.hintLevel === 'half'
-								? 'Bantuan 50:50 aktif - 2 opsi salah akan disembunyikan saat soal tampil.'
-								: 'Tanpa bantuan untuk kartu ini.'
-					el('btnReveal').classList.add('hidden')
-					el('btnNext').classList.add('hidden')
-
-					stopTimer?.()
-					stopTimer = startTimer(m.pickSeconds, {
-						onTick: (left, frac) => {
-							const t = el('gTimer')
-							t.firstElementChild.style.width = frac * 100 + '%'
-							t.className =
-								'timer' + (frac < 0.2 ? ' danger' : frac < 0.5 ? ' warn' : '')
-						},
-					})
-				} else if (m.t === 'card') {
-					phaseForProgress = 'question'
-					current = m
-					lastTick = 0
-					show('game')
-					el('gWagerWait').classList.add('hidden')
-					el('gameGrid').classList.remove('hidden')
-					el('gFlip').classList.remove('is-flipped')
-					el('gType').textContent = m.typeLabel
-					el('gPos').textContent = 'Kartu ' + (m.index + 1) + ' / ' + m.total
-					el('gPrompt').textContent = m.prompt
-					el('gCode').innerHTML = highlight(m.code, m.lang)
-					el('gOpts').innerHTML = optionButtonsHtml(m.options)
-					if (m.eliminated && m.eliminated.length) {
-						for (const idx of m.eliminated) {
-							const b = el('gOpts').children[idx]
-							if (b) b.classList.add('opt-eliminated')
-						}
-					}
-					el('btnReveal').classList.remove('hidden')
-					el('btnNext').classList.add('hidden')
-
-					stopTimer?.()
-					stopTimer = startTimer(m.timeLimit, {
-						onTick: (left, frac) => {
-							const t = el('gTimer')
-							t.firstElementChild.style.width = frac * 100 + '%'
-							t.className =
-								'timer' + (frac < 0.2 ? ' danger' : frac < 0.5 ? ' warn' : '')
-							// Bunyi "tuk" sekali per detik di 5 detik terakhir -
-							// lastTick mencegah bunyi dobel karena onTick dipanggil
-							// tiap 100ms, bukan tiap detik.
-							const s = Math.ceil(left)
-							if (s <= 5 && s > 0 && s !== lastTick) {
-								lastTick = s
-								sfxTick()
-							}
-						},
-					})
-				} else if (m.t === 'progress') {
-					el('gAnswered').textContent =
-						m.answered +
-						' dari ' +
-						m.total +
-						(phaseForProgress === 'wager' ? ' memasang taruhan' : ' menjawab')
-				} else if (m.t === 'reveal') {
-					stopTimer?.()
-					sfxReveal()
-					// Confetti cuma kalau ada yang jawab benar - kalau satu kelas
-					// tidak ada yang benar, hujan confetti malah terasa mengejek.
-					if (m.fastest && m.fastest.length) confettiBurst()
-					el('gFlip').classList.add('is-flipped')
-					el('gAnswer').textContent =
-						LETTERS[m.answer] + '. ' + current.options[m.answer]
-					el('gWhy').textContent = m.explanation
-					el('gBackPrompt').textContent = current.prompt
-					el('gBackCode').innerHTML = highlight(current.code, current.lang)
-
-					// Transparansi ke seluruh kelas: siapa yang paling cepat DAN benar,
-					// lengkap dengan waktu jawabnya - biar kalau ada yang ngerasa
-					// "harusnya aku lebih cepat", semua bisa cek langsung angkanya.
-					el('gFastest').innerHTML =
-						m.fastest && m.fastest.length
-							? '<div class="label m-0">Tercepat jawab benar</div>' +
-								m.fastest
-									.map(
-										(f, i) =>
-											'<div class="row between text-small"><span>' +
-											(i + 1) +
-											'. ' +
-											escapeHtml(f.name) +
-											(f.team ? ' (Tim ' + f.team + ')' : '') +
-											'</span><strong>' +
-											(f.ms / 1000).toFixed(1) +
-											' dtk</strong></div>',
-									)
-									.join('')
-							: '<p class="muted text-small m-0">Belum ada yang menjawab benar.</p>'
-
-					const total = Math.max(1, m.responders)
-					el('gStats').innerHTML = current.options
-						.map((o, i) => {
-							const pct = Math.round((m.stats[i] / total) * 100)
-							const okOpt = i === m.answer
 							return (
-								'<div><div class="vote-row' +
-								(okOpt ? ' vote-row-correct' : '') +
-								'">' +
-								'<span>' +
-								LETTERS[i] +
-								'. ' +
-								escapeHtml(o) +
-								(okOpt
-									? ' <span class="vote-correct-badge">&#10003; Benar</span>'
+								'<div class="lb-row roster-row' +
+								(p.online === false ? ' off' : '') +
+								'"><span class="lb-rank">' +
+								p.rank +
+								'</span><span class="lb-name">' +
+								escapeHtml(p.name) +
+								(p.streak >= 3 ? ' 🔥' : '') +
+								(p.online === false
+									? ' <span class="muted">(offline)</span>'
 									: '') +
-								'</span><strong>' +
-								m.stats[i] +
-								' (' +
-								pct +
-								'%)</strong></div>' +
-								'<div class="timer vote-bar"><i style="width:' +
-								pct +
-								'%;background:' +
-								(okOpt ? 'var(--green)' : 'var(--surface2)') +
-								'"></i></div></div>'
+								'</span><select class="input team-select" data-pid="' +
+								p.pid +
+								'">' +
+								opts +
+								'</select><span class="lb-score">' +
+								p.score +
+								'</span></div>'
 							)
 						})
 						.join('')
-
-					el('gBoard').innerHTML = leaderboardRowsHtml(m.leaderboard, { showTeam: true })
-					renderTeams(el('gTeams'), m.teams)
-					el('btnReveal').classList.add('hidden')
-					el('btnNext').classList.remove('hidden')
-					el('btnNextLabel').textContent = m.isLast
-						? 'Lihat hasil akhir'
-						: 'Kartu berikutnya'
-				} else if (m.t === 'end') {
-					stopTimer?.()
-					sfxFanfare()
-					confettiBurst(true)
-					show('end')
-					el('eBoard').innerHTML = leaderboardRowsHtml(m.leaderboard, { showTeam: true })
-					renderTeams(el('eTeams'), m.teams, { final: true })
-				}
+					: '<p class="muted m-0 text-small">Menunggu siswa bergabung...</p>'
+			} else {
+				el('roster').innerHTML = leaderboardRowsHtml(m.players, { showTeam: false })
 			}
-		</script>
-	</body>
+		}
+
+		el('start').onclick = () => {
+			pushOptions()
+			sock.send({ t: 'host:start', hint: el('gHint').value })
+		}
+		el('btnReveal').onclick = () => sock.send({ t: 'host:reveal' })
+		el('btnNext').onclick = () => sock.send({ t: 'host:next', hint: el('gHint').value })
+		el('btnAgain').onclick = () => sock.send({ t: 'host:restart' })
+
+		document.addEventListener('keydown', (e) => {
+			if (el('game').classList.contains('hidden')) return
+			if (e.code === 'Space') {
+				e.preventDefault()
+				if (!el('btnReveal').classList.contains('hidden')) el('btnReveal').click()
+			} else if (e.code === 'Enter') {
+				e.preventDefault()
+				if (!el('btnNext').classList.contains('hidden')) el('btnNext').click()
+			}
+		})
+
+		function show(which) {
+			for (const id of ['lobby', 'game', 'end'])
+				el(id).classList.toggle('hidden', id !== which)
+		}
+
+		function renderTeams(node, teams, opts) {
+			node.innerHTML = teamsSummaryHtml(teams, opts)
+		}
+
+		function onMessage(m) {
+			if (m.t === 'room') {
+				sessionStorage.setItem('bb_host_code', m.code)
+				el('code').textContent = m.code
+				if (m.banks) {
+					el('optBank').innerHTML = m.banks
+						.map(
+							(b) =>
+								'<option value="' +
+								escapeHtml(b.id) +
+								'">' +
+								escapeHtml(b.label) +
+								' (' +
+								b.count +
+								' soal)</option>',
+						)
+						.join('')
+				}
+				el('optBank').value = m.options.bank
+				el('optCount').max = m.available
+				el('optTeam').checked = !!m.options.teamMode
+				el('optTeamCount').value = m.options.teamCount || 2
+				el('optTeamScoreInterval').value = m.options.teamScoreInterval || 5
+				el('teamModeExtra').classList.toggle('hidden', !m.options.teamMode)
+				el('optWager').checked = !!m.options.wagerMode
+				hintPanelVisibility()
+				el('urls').innerHTML = m.joinUrls.length
+					? m.joinUrls
+						.map(
+							(u) =>
+								'<code class="join-url">http://' + escapeHtml(u) + '</code>',
+						)
+						.join('')
+					: '<span class="muted text-small">Alamat LAN tidak terdeteksi.</span>'
+			} else if (m.t === 'error') {
+				sessionStorage.removeItem('bb_host_code')
+				sock.send({ t: 'host:create', options: readOptions() })
+			} else if (m.t === 'roster') {
+				renderRoster(m)
+				el('gBoard').innerHTML = leaderboardRowsHtml(m.players.slice(0, 8), {
+					showTeam: true,
+				})
+				if (m.phase === 'lobby') show('lobby')
+			} else if (m.t === 'lobby') {
+				show('lobby')
+			} else if (m.t === 'wager') {
+				// Fase pasang taruhan (mode taruhan) - host TIDAK melihat soal di
+				// sini, cuma info bantuan yang berlaku dan progres pemasangan.
+				phaseForProgress = 'wager'
+				lastTick = 0
+				show('game')
+				el('gWagerWait').classList.remove('hidden')
+				el('gameGrid').classList.add('hidden')
+				el('gType').textContent = 'Pasang Taruhan'
+				el('gPos').textContent = 'Kartu ' + (m.index + 1) + ' / ' + m.total
+				el('gWagerHintInfo').textContent =
+					m.hintLevel === 'clue' && m.clue
+						? 'Clue untuk peserta: ' + m.clue
+						: m.hintLevel === 'half'
+							? 'Bantuan 50:50 aktif - 2 opsi salah akan disembunyikan saat soal tampil.'
+							: 'Tanpa bantuan untuk kartu ini.'
+				el('btnReveal').classList.add('hidden')
+				el('btnNext').classList.add('hidden')
+
+				stopTimer?.()
+				stopTimer = startTimer(m.pickSeconds, {
+					onTick: (left, frac) => {
+						const t = el('gTimer')
+						t.firstElementChild.style.width = frac * 100 + '%'
+						t.className =
+							'timer' + (frac < 0.2 ? ' danger' : frac < 0.5 ? ' warn' : '')
+					},
+				})
+			} else if (m.t === 'card') {
+				phaseForProgress = 'question'
+				current = m
+				lastTick = 0
+				show('game')
+				el('gWagerWait').classList.add('hidden')
+				el('gameGrid').classList.remove('hidden')
+				el('gFlip').classList.remove('is-flipped')
+				// Bersihkan pengumuman ON FIRE & panel miskonsepsi dari reveal
+				// sebelumnya - sisi belakang kartu disembunyikan saat flip reset,
+				// tapi isinya jangan sampai basi saat dibuka lagi nanti.
+				el('gFire').innerHTML = ''
+				el('gMisconception').innerHTML = ''
+				// Boss fight (v2.3): kartu terakhir ditandai server lewat flag
+				// `boss` - tampilkan di pill tipe supaya satu kelas sadar
+				// poinnya 2x lipat.
+				el('gType').textContent = m.boss ? m.typeLabel + ' \u00B7 BOSS x2' : m.typeLabel
+				el('gPos').textContent = 'Kartu ' + (m.index + 1) + ' / ' + m.total
+				el('gPrompt').textContent = m.prompt
+				el('gCode').innerHTML = highlight(m.code, m.lang)
+				el('gOpts').innerHTML = optionButtonsHtml(m.options)
+				if (m.eliminated && m.eliminated.length) {
+					for (const idx of m.eliminated) {
+						const b = el('gOpts').children[idx]
+						if (b) b.classList.add('opt-eliminated')
+					}
+				}
+				el('btnReveal').classList.remove('hidden')
+				el('btnNext').classList.add('hidden')
+
+				stopTimer?.()
+				stopTimer = startTimer(m.timeLimit, {
+					onTick: (left, frac) => {
+						const t = el('gTimer')
+						t.firstElementChild.style.width = frac * 100 + '%'
+						t.className =
+							'timer' + (frac < 0.2 ? ' danger' : frac < 0.5 ? ' warn' : '')
+						// Bunyi "tuk" sekali per detik di 5 detik terakhir -
+						// lastTick mencegah bunyi dobel karena onTick dipanggil
+						// tiap 100ms, bukan tiap detik.
+						const s = Math.ceil(left)
+						if (s <= 5 && s > 0 && s !== lastTick) {
+							lastTick = s
+							sfxTick()
+						}
+					},
+				})
+			} else if (m.t === 'progress') {
+				el('gAnswered').textContent =
+					m.answered +
+					' dari ' +
+					m.total +
+					(phaseForProgress === 'wager' ? ' memasang taruhan' : ' menjawab')
+			} else if (m.t === 'reveal') {
+				stopTimer?.()
+				sfxReveal()
+				// Confetti cuma kalau ada yang jawab benar - kalau satu kelas
+				// tidak ada yang benar, hujan confetti malah terasa mengejek.
+				if (m.fastest && m.fastest.length) confettiBurst()
+				el('gFlip').classList.add('is-flipped')
+				el('gAnswer').textContent =
+					LETTERS[m.answer] + '. ' + current.options[m.answer]
+				el('gWhy').textContent = m.explanation
+				el('gBackPrompt').textContent = current.prompt
+				el('gBackCode').innerHTML = highlight(current.code, current.lang)
+
+				// Pengumuman ON FIRE (v2.3): server mengirim daftar peserta yang
+				// streak-nya baru mencapai milestone di kartu ini - tampilkan
+				// besar-besar di layar kelas.
+				el('gFire').innerHTML =
+					m.hotStreaks && m.hotStreaks.length
+						? m.hotStreaks
+							.map(
+								(h) =>
+									'<div class="banner banner-green">\uD83D\uDD25 ON FIRE: ' +
+									escapeHtml(h.name) +
+									' - ' +
+									h.streak +
+									' benar beruntun!</div>',
+							)
+							.join('')
+						: ''
+
+				// Transparansi ke seluruh kelas: siapa yang paling cepat DAN benar,
+				// lengkap dengan waktu jawabnya - biar kalau ada yang ngerasa
+				// "harusnya aku lebih cepat", semua bisa cek langsung angkanya.
+				el('gFastest').innerHTML =
+					m.fastest && m.fastest.length
+						? '<div class="label m-0">Tercepat jawab benar</div>' +
+						m.fastest
+							.map(
+								(f, i) =>
+									'<div class="row between text-small"><span>' +
+									(i + 1) +
+									'. ' +
+									escapeHtml(f.name) +
+									(f.team ? ' (Tim ' + f.team + ')' : '') +
+									'</span><strong>' +
+									(f.ms / 1000).toFixed(1) +
+									' dtk</strong></div>',
+							)
+							.join('')
+						: '<p class="muted text-small m-0">Belum ada yang menjawab benar.</p>'
+
+				const total = Math.max(1, m.responders)
+				el('gStats').innerHTML = current.options
+					.map((o, i) => {
+						const pct = Math.round((m.stats[i] / total) * 100)
+						const okOpt = i === m.answer
+						return (
+							'<div><div class="vote-row' +
+							(okOpt ? ' vote-row-correct' : '') +
+							'">' +
+							'<span>' +
+							LETTERS[i] +
+							'. ' +
+							escapeHtml(o) +
+							(okOpt
+								? ' <span class="vote-correct-badge">&#10003; Benar</span>'
+								: '') +
+							'</span><strong>' +
+							m.stats[i] +
+							' (' +
+							pct +
+							'%)</strong></div>' +
+							'<div class="timer vote-bar"><i style="width:' +
+							pct +
+							'%;background:' +
+							(okOpt ? 'var(--green)' : 'var(--surface2)') +
+							'"></i></div></div>'
+						)
+					})
+					.join('')
+
+				// Panel miskonsepsi (v2.3): opsi SALAH yang paling banyak dipilih
+				// disorot ke host sebagai bahan bahasan - "kenapa banyak yang
+				// pilih ini?". null dari server kalau tidak ada yang salah.
+				el('gMisconception').innerHTML = m.mostPickedWrong
+					? '<div class="banner banner-red">\u26A0\uFE0F Perlu dibahas: ' +
+					m.mostPickedWrong.count +
+					' peserta memilih ' +
+					LETTERS[m.mostPickedWrong.option] +
+					' (' +
+					escapeHtml(current.options[m.mostPickedWrong.option]) +
+					') padahal kuncinya ' +
+					LETTERS[m.answer] +
+					'.</div>'
+					: ''
+
+				el('gBoard').innerHTML = leaderboardRowsHtml(m.leaderboard, { showTeam: true })
+				renderTeams(el('gTeams'), m.teams)
+				el('btnReveal').classList.add('hidden')
+				el('btnNext').classList.remove('hidden')
+				el('btnNextLabel').textContent = m.isLast
+					? 'Lihat hasil akhir'
+					: 'Kartu berikutnya'
+			} else if (m.t === 'end') {
+				stopTimer?.()
+				sfxFanfare()
+				confettiBurst(true)
+				show('end')
+				el('eBoard').innerHTML = leaderboardRowsHtml(m.leaderboard, { showTeam: true })
+				renderTeams(el('eTeams'), m.teams, { final: true })
+			}
+		}
+	</script>
+</body>
+
 </html>

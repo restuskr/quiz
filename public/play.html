@@ -66,6 +66,10 @@
 				</div>
 			</div>
 			<div id="pTeams"></div>
+			<!-- Pengumuman ON FIRE (v2.3) - diisi saat ada peserta yang streak-nya
+			     mencapai milestone di reveal terakhir; dikosongkan lagi saat kartu
+			     baru muncul. -->
+			<div id="pFire" class="stack gap-2 mb-5"></div>
 			<div class="timer mb-6" id="pTimer"><i></i></div>
 
 			<div class="flip" id="pFlip">
@@ -383,13 +387,22 @@
 				lastTick = 0
 				show('game')
 				el('pFlip').classList.remove('is-flipped')
-				el('pType').textContent = m.typeLabel
+				// Pengumuman ON FIRE dari reveal sebelumnya dibersihkan di sini -
+				// momennya sudah lewat, jangan sampai "nempel" di kartu baru.
+				el('pFire').innerHTML = ''
+				// Boss fight (v2.3): kartu terakhir ditandai server lewat flag
+				// `boss` - tampilkan di pill tipe & teks hint supaya peserta
+				// sadar poinnya 2x lipat sebelum menjawab.
+				el('pType').textContent = m.boss ? m.typeLabel + ' \u00B7 BOSS x2' : m.typeLabel
 				el('pPos').textContent = m.index + 1 + ' / ' + m.total
 				el('pPrompt').textContent = m.prompt
 				el('pCode').innerHTML = highlight(m.code, m.lang)
-				el('pHint').textContent = wagerModeActive
-					? 'Poinmu tergantung taruhan yang sudah kamu pasang tadi.'
-					: 'Makin cepat menjawab, makin besar poinnya.'
+				el('pHint').textContent =
+					m.boss && !wagerModeActive
+						? '\uD83D\uDC79 BOSS ROUND - jawaban benar poinnya 2x lipat! Makin cepat, makin besar.'
+						: wagerModeActive
+							? 'Poinmu tergantung taruhan yang sudah kamu pasang tadi.'
+							: 'Makin cepat menjawab, makin besar poinnya.'
 				el('pOpts').innerHTML = optionButtonsHtml(m.options, {
 					tag: 'button',
 					selectable: true,
@@ -458,7 +471,8 @@
 				}
 				// wagerNoAnswerPenalty cuma terisi di mode taruhan, untuk peserta
 				// yang sudah pasang taruhan tapi tidak sempat/tidak menjawab sama
-				// sekali - dikenai penalti flat, bukan cuma "tidak dapat apa-apa".
+				// sekali - sejak v2.2 penaltinya = stake penuh yang dipasang
+				// (diam dianggap kalah taruhan), bukan lagi penalti flat.
 				const noAnswerPenalty = m.wagerNoAnswerPenalty
 				el('pMark').textContent = !m.answered
 					? '\u23F1'
@@ -474,7 +488,7 @@
 						: 'var(--red)'
 				el('pVerdict').textContent = !m.answered
 					? noAnswerPenalty
-						? 'Tidak menjawab (kena penalti)'
+						? 'Tidak menjawab (taruhan hangus)'
 						: 'Tidak sempat menjawab'
 					: m.correct
 						? 'Benar!'
@@ -507,12 +521,20 @@
 								? '<div class="row between text-small"><span class="muted">Bonus beruntun</span><strong>+' +
 								m.breakdown.streakBonus +
 								'</strong></div>'
+								: '') +
+							// Baris boss fight (v2.3) - cuma muncul di kartu terakhir
+							// yang benar: server mengalikan total poin dengan
+							// breakdown.bossMultiplier.
+							(m.breakdown.bossMultiplier
+								? '<div class="row between text-small"><span class="muted">\uD83D\uDC79 Boss round</span><strong>x' +
+								m.breakdown.bossMultiplier +
+								'</strong></div>'
 								: '')
 					}
 				} else if (!m.answered && noAnswerPenalty) {
 					el('pBreakdown').classList.remove('hidden')
 					el('pBreakdown').innerHTML =
-						'<div class="row between text-small"><span class="muted">Penalti tidak menjawab</span><strong>-' +
+						'<div class="row between text-small"><span class="muted">Taruhan hangus (tidak menjawab)</span><strong>-' +
 						noAnswerPenalty +
 						'</strong></div>'
 				} else if (
@@ -535,14 +557,29 @@
 				el('pStreak').textContent =
 					m.streak > 1 ? '🔥 ' + m.streak + ' benar beruntun' : 'Total ' + m.score
 			} else if (m.t === 'reveal') {
-					const questionNumber = m.index + 1
-					const interval = m.teamScoreInterval || 5
-					if (m.teams && (questionNumber % interval === 0 || m.isLast)) {
-						const me = m.leaderboard.find((p) => p.pid === myPid)
-						el('pTeams').innerHTML = teamsSummaryHtml(m.teams, {
-							highlightTeam: me ? me.team : null,
-						})
-					}
+				// Pengumuman ON FIRE (v2.3): server mengirim daftar peserta yang
+				// streak-nya baru mencapai milestone di kartu ini - tampilkan
+				// ke semua HP supaya satu kelas ikut tahu.
+				if (m.hotStreaks && m.hotStreaks.length) {
+					el('pFire').innerHTML = m.hotStreaks
+						.map(
+							(h) =>
+								'<div class="banner banner-green">\uD83D\uDD25 ON FIRE: ' +
+								escapeHtml(h.name) +
+								' - ' +
+								h.streak +
+								' benar beruntun!</div>',
+						)
+						.join('')
+				}
+				const questionNumber = m.index + 1
+				const interval = m.teamScoreInterval || 5
+				if (m.teams && (questionNumber % interval === 0 || m.isLast)) {
+					const me = m.leaderboard.find((p) => p.pid === myPid)
+					el('pTeams').innerHTML = teamsSummaryHtml(m.teams, {
+						highlightTeam: me ? me.team : null,
+					})
+				}
 			} else if (m.t === 'end') {
 				stopTimer?.()
 				show('end')
