@@ -230,6 +230,9 @@ pre {
 	font-size: clamp(14px, 2.4vw, 20px);
 	line-height: 1.6;
 	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	touch-action: pan-x pan-y;
+	overscroll-behavior-x: contain;
 	tab-size: 2;
 	white-space: pre;
 }
@@ -290,6 +293,22 @@ pre {
 
 .flip-back {
 	transform: rotateY(180deg);
+}
+
+/*
+ * Pada tampilan mobile, kedua sisi kartu menumpuk di grid-area 'card' yang sama.
+ * Karena sisi belakang (.flip-back) berada SETELAH sisi depan di DOM, browser
+ * mobile menganggap sisi belakang berada di atas sisi depan dalam layer tree.
+ * Akibatnya, sentuhan/gesture geser horizontal pada kotak kode (#pCode) sebelum
+ * jawaban dibuka (reveal) tertelan oleh sisi belakang yang invisible.
+ * Penanganan: nonaktifkan pointer-events pada sisi yang sedang tidak aktif.
+ */
+.flip:not(.is-flipped) .flip-back {
+	pointer-events: none;
+}
+
+.flip.is-flipped .flip-face:not(.flip-back) {
+	pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
