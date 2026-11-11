@@ -91,6 +91,14 @@
 						dengan mode tim.
 					</p>
 					<label class="toggle">
+						<input type="checkbox" id="optMischief" />
+						<span>Mode usil &#x1F608; (satu opsi jawaban bisa kabur saat disentuh, maks 3x)</span>
+					</label>
+					<p class="muted text-small m-0">
+						Boleh benar, boleh salah yang kabur (50/50) - murni kejutan,
+						bukan petunjuk. Kartu ber-pelari otomatis dapat +5 detik.
+					</p>
+					<label class="toggle">
 						<input type="checkbox" id="optShuffle" checked />
 						<span>Acak urutan soal</span>
 					</label>
@@ -299,6 +307,7 @@
 				count: Number(el('optCount').value) || 10,
 				types: [...picked],
 				wagerMode: el('optWager').checked,
+				mischiefMode: el('optMischief').checked,
 			}
 		}
 		function pushOptions() {
@@ -313,6 +322,7 @@
 			'optShuffle',
 			'optCount',
 			'optWager',
+			'optMischief',
 		])
 			el(id).addEventListener('change', pushOptions)
 
@@ -445,6 +455,7 @@
 				el('optTeamScoreInterval').value = m.options.teamScoreInterval || 5
 				el('teamModeExtra').classList.toggle('hidden', !m.options.teamMode)
 				el('optWager').checked = !!m.options.wagerMode
+				el('optMischief').checked = !!m.options.mischiefMode
 				hintPanelVisibility()
 				el('urls').innerHTML = m.joinUrls.length
 					? m.joinUrls

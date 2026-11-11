@@ -154,6 +154,15 @@
 		// pas (bukan cuma angka) di wgPicked/wagerAck.
 		let currentWagerChoices = []
 
+		// Mode usil (v2.4): berapa kali opsi "pelari" sudah kabur di kartu ini
+		// dilacak di current.dodges; maksimal MISCHIEF_MAX_DODGES kali, setelah
+		// itu tombolnya bisa dipencet normal. dodgeGuard menahan click yang
+		// menyertai tap/hover pemicu kabur supaya tidak jatuh sebagai pilihan
+		// jawaban di opsi lain (tombol pelari bergeser tepat sebelum click
+		// mendarat).
+		const MISCHIEF_MAX_DODGES = 3
+		let dodgeGuard = false
+
 		// Suara saat jawaban dibuka: benar -> true.mp3, salah/tidak menjawab
 		// -> false.mp3. File-nya ditaruh di public/sounds/ (lihat README di
 		// folder itu). "Unlock" sekali lewat gesture pengguna supaya HP
@@ -244,11 +253,45 @@
 				el(id).classList.toggle('hidden', id !== which)
 		}
 
+		// Mode usil (v2.4): coba buat opsi ke-i kabur. Mengembalikan true kalau
+		// benar-benar kabur - berarti tap/klik ini BUKAN jawaban. Dipanggil dari
+		// pick() (jalur tap/klik) dan pointerenter (jalur hover mouse).
+		function tryDodge(i) {
+			if (!current || current.locked) return false
+			if (current.runner !== i) return false
+			if ((current.dodges || 0) >= MISCHIEF_MAX_DODGES) return false
+			current.dodges = (current.dodges || 0) + 1
+			const btn = el('pOpts').children[i]
+			if (btn) {
+				btn.style.transition = 'transform 0.25s ease'
+				const x = Math.round((Math.random() * 2 - 1) * 70)
+				const y = Math.round((Math.random() * 2 - 1) * 140)
+				btn.style.transform = 'translate(' + x + '%, ' + y + '%)'
+			}
+			dodgeGuard = true
+			setTimeout(() => {
+				dodgeGuard = false
+			}, 400)
+			el('pHint').textContent =
+				'\uD83D\uDE1C Waduh, kabur! Tangkap dulu (' +
+				current.dodges +
+				'/' +
+				MISCHIEF_MAX_DODGES +
+				')'
+			return true
+		}
+
 		function pick(i) {
 			// current.locked cuma jadi true kalau waktu habis atau jawaban
 			// sudah dibuka (lihat onDone timer & handler 'result') - selama
 			// belum itu, siswa bebas ganti pilihan berkali-kali.
 			if (!current || current.locked) return
+			// Mode usil: kalau yang dipencet opsi "pelari" dan jatah kaburnya
+			// belum habis, tombolnya kabur dulu - TIDAK tercatat sebagai jawaban.
+			if (tryDodge(i)) return
+			// Click yang barusan memicu kabur jangan sampai terbaca sebagai
+			// pilihan di opsi lain.
+			if (dodgeGuard) return
 			// Opsi yang sudah dibuang oleh bantuan 50:50 (mode taruhan) tidak
 			// bisa dipilih - tombolnya juga sudah di-disable, ini jaga-jaga
 			// untuk jalur pintasan keyboard.
@@ -407,8 +450,15 @@
 					tag: 'button',
 					selectable: true,
 				})
-				for (const b of el('pOpts').children)
+				for (const b of el('pOpts').children) {
 					b.onclick = () => pick(Number(b.dataset.i))
+					// Jalur hover (mouse saja): tombol pelari kabur SEBELUM sempat
+					// diklik. Di layar sentuh tidak dipakai - kaburnya lewat pick()
+					// saat tap, supaya tidak ada click nyasar ke opsi lain.
+					b.onpointerenter = (e) => {
+						if (e.pointerType === 'mouse') tryDodge(Number(b.dataset.i))
+					}
+				}
 				if (m.eliminated && m.eliminated.length) {
 					for (const idx of m.eliminated) {
 						const b = el('pOpts').children[idx]
